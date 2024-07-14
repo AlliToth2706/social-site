@@ -2,7 +2,7 @@ import { createPost, editPost, removePost } from '../Data/posts';
 import { Box, Button, ButtonGroup, Flex, FormControl, Spacer, Text, useDisclosure } from '@chakra-ui/react';
 import React, { useContext, useState } from 'react';
 import { textFilter, UserContext } from '../App';
-import Alert from '../Components/Alert';
+import Alert from './Alert';
 import ReactionBar from './ReactionBar';
 import AvatarButton from './AvatarButton';
 import Quill from './Quill';

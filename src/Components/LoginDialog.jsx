@@ -1,15 +1,6 @@
 import { verifyUser, getUser } from '../Data/accounts';
 import { useRef, useState } from 'react';
-import {
-    useToast,
-    FormControl,
-    FormLabel,
-    FormErrorMessage,
-    FormHelperText,
-    Input,
-    Button,
-    // Flex,
-} from '@chakra-ui/react';
+import { useToast, FormControl, FormLabel, FormErrorMessage, FormHelperText, Input, Button } from '@chakra-ui/react';
 import { shortToastTime, longToastTime, emailRegex } from '../App';
 import Modal from './Modal';
 
@@ -19,7 +10,6 @@ import Modal from './Modal';
 const LoginDialog = ({ login, isOpen, onClose }) => {
     const [user, setUser] = useState({ email: '', password: '' });
     const [isValidEmail, setValidEmail] = useState(null);
-    // const [mfaDisplay, setMfaDisplay] = useState(false);
     const mfaRefs = useRef([]);
     mfaRefs.current = [];
 
@@ -58,33 +48,13 @@ const LoginDialog = ({ login, isOpen, onClose }) => {
             return;
         }
 
+        let verified,
+            reason = verifyUser(user.email, user.password);
+
         // login unsuccessful
-        let verification = verifyUser(user.email, user.password);
-
-        if (verification === 401) {
+        if (verified !== true) {
             toast({
-                title: 'Incorrect password.',
-                description: 'Please enter the correct password.',
-                status: 'error',
-                duration: longToastTime,
-                isClosable: true,
-            });
-            return;
-        } else if (verification === 403) {
-            toast({
-                title: 'Your account is disabled.',
-                status: 'error',
-                duration: longToastTime,
-                isClosable: true,
-            });
-            return;
-        } else if (verification !== true) {
-            // removes password
-            setUser({ email: user.email, password: '' });
-
-            toast({
-                title: 'Login failed.',
-                description: 'Please try again or sign up instead.',
+                title: reason,
                 status: 'error',
                 duration: longToastTime,
                 isClosable: true,

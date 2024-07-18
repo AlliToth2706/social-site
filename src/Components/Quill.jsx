@@ -34,13 +34,6 @@ const Quill = ({ value, textCallback, minW = '0', container = '' }) => {
 
         // If the new comment is empty, don't submit
         if (sanitizedText === '<p><br></p>') {
-            //     console.log('empty');
-            //     toast({
-            //         title: `Please enter some text`,
-            //         status: 'error',
-            //         duration: shortToastTime,
-            //         isClosable: true,
-            //     });
             isFailing = true;
         }
 

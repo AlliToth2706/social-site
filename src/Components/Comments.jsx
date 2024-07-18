@@ -6,7 +6,7 @@ import Alert from '../Components/Alert';
 import ReactionBar from './ReactionBar';
 import AvatarButton from './AvatarButton';
 import Quill from './Quill';
-import { PostContext } from '../Pages/Forum';
+import { PostContext } from '../App';
 import { getDetails } from '../Data/account-details';
 import { checkValidPost } from './NewPostForm';
 
@@ -47,8 +47,6 @@ const CommentForm = ({ parent_id, comment_id = null, type = 'comment', setIsRepl
                 replies: [],
             });
 
-        // createPost({ email: User, text: newComment, parent_post_id: parent_id }, syncCurrentPosts);
-
         // Resets comment
         setNewComment('');
 
@@ -77,11 +75,10 @@ const CommentForm = ({ parent_id, comment_id = null, type = 'comment', setIsRepl
 /**
  * The form for users to edit their comments.
  */
-// const EditComment = ({ data, setEditing, syncCurrentPosts }) => {
-const EditComment = ({ originalComment, isReply, post_id, comment_id, reply_id, setEditing }) => {
+const EditComment = ({ og_comment, is_reply, post_id, comment_id, reply_id, set_editing }) => {
     const { setPosts } = useContext(PostContext);
 
-    const [comment, setComment] = useState(originalComment.comment);
+    const [comment, setComment] = useState(og_comment.comment);
 
     const toast = useToast();
 
@@ -99,8 +96,7 @@ const EditComment = ({ originalComment, isReply, post_id, comment_id, reply_id, 
         if (!checkValidPost(comment, isInvalid, toast)) return;
 
         // Edits the post
-        // editPost({ text: comment }, data.post_id);
-        isReply
+        is_reply
             ? editReply(post_id, comment_id, reply_id, { comment: comment })
             : editComment(post_id, comment_id, {
                   comment: comment,
@@ -112,7 +108,7 @@ const EditComment = ({ originalComment, isReply, post_id, comment_id, reply_id, 
         // Re-grabs the posts from localStorage
         setPosts(getAllPosts());
 
-        setEditing(false);
+        set_editing(false);
     };
 
     return (
@@ -120,8 +116,8 @@ const EditComment = ({ originalComment, isReply, post_id, comment_id, reply_id, 
             <Alert
                 heading="Delete Comment?"
                 onClick={() => {
-                    isReply ? removeReply(post_id, comment_id, reply_id) : removeComment(post_id, comment_id);
-                    setEditing(false);
+                    is_reply ? removeReply(post_id, comment_id, reply_id) : removeComment(post_id, comment_id);
+                    set_editing(false);
                     setPosts(getAllPosts());
                     onClose();
                 }}
@@ -134,8 +130,8 @@ const EditComment = ({ originalComment, isReply, post_id, comment_id, reply_id, 
                 </FormControl>
 
                 <ButtonGroup gap={2}>
-                    {comment === originalComment.comment ? (
-                        <Button onClick={() => setEditing(false)}>Cancel</Button>
+                    {comment === og_comment.comment ? (
+                        <Button onClick={() => set_editing(false)}>Cancel</Button>
                     ) : (
                         <Button type="submit">Submit</Button>
                     )}
@@ -151,17 +147,17 @@ const EditComment = ({ originalComment, isReply, post_id, comment_id, reply_id, 
 /**
  * Generates the comments on a post, and the replies on a post. Also handles editing state.
  */
-const Comment = ({ comment, isReply = false, post_id, comment_id, reply_id = null }) => {
+const Comment = ({ comment, is_reply = false, post_id, comment_id, reply_id = null }) => {
     const User = useContext(UserContext);
     const { setPosts } = useContext(PostContext);
     let commenter = getDetails(comment.email);
     comment.comment = textFilter.clean(comment.comment);
     commenter.fullname = `${commenter.first_name} ${commenter.last_name}`;
-    const [isEditing, setEditing] = useState(false);
+    const [isEditing, set_editing] = useState(false);
     const [isReplying, setIsReplying] = useState(false);
 
     const editReactionInfo = (reaction) => {
-        isReply
+        is_reply
             ? editReply(post_id, comment_id, reply_id, { reactions: reaction })
             : editComment(post_id, comment_id, {
                   reactions: reaction,
@@ -175,9 +171,9 @@ const Comment = ({ comment, isReply = false, post_id, comment_id, reply_id = nul
                 direction="row"
                 align="start"
                 p={4}
-                pl={isReply ? 8 : 4}
-                borderLeft={isReply && '1px solid grey'}
-                ml={isReply ? 6 : null}
+                pl={is_reply ? 8 : 4}
+                borderLeft={is_reply && '1px solid grey'}
+                ml={is_reply ? 6 : null}
                 minH="96px"
             >
                 <Flex direction="column">
@@ -186,14 +182,14 @@ const Comment = ({ comment, isReply = false, post_id, comment_id, reply_id = nul
                         <Button
                             size="sm"
                             onClick={() => {
-                                setEditing(true);
+                                set_editing(true);
                             }}
                             mt={2}
                         >
                             Edit
                         </Button>
                     )}
-                    {!isReply && (
+                    {!is_reply && (
                         <Button size="sm" className="material-icons" mt={2} onClick={() => setIsReplying(true)}>
                             reply
                         </Button>
@@ -207,12 +203,12 @@ const Comment = ({ comment, isReply = false, post_id, comment_id, reply_id = nul
                             </Text>
                             {isEditing ? (
                                 <EditComment
-                                    originalComment={comment}
-                                    isReply={isReply}
+                                    og_comment={comment}
+                                    is_reply={is_reply}
                                     post_id={post_id}
                                     comment_id={comment_id}
                                     reply_id={reply_id}
-                                    setEditing={setEditing}
+                                    set_editing={set_editing}
                                 />
                             ) : (
                                 <Text ml={4} dangerouslySetInnerHTML={{ __html: comment.comment || comment.reply }} />

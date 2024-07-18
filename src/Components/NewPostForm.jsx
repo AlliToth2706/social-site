@@ -19,7 +19,7 @@ import { useContext, useState } from 'react';
 import { imageRegex, UserContext, longToastTime, shortToastTime, maxPostLength } from '../App';
 import { createPost, getAllPosts } from '../Data/posts';
 import Quill from './Quill';
-import { PostContext } from '../Pages/Forum';
+import { PostContext } from '../App';
 
 /**
  * Check if the post's text is valid
@@ -61,7 +61,7 @@ const NewPostForm = () => {
         text: '',
         image_url: '',
     };
-    // const [file, setFile] = useState();
+
     const [newPost, setNewPost] = useState(blankPost);
     const toast = useToast();
     const [isValidLink, setValidLink] = useState(null);
@@ -76,9 +76,6 @@ const NewPostForm = () => {
     // Changes the values passed through whenever there is a change
     // to be used in the passed handleSubmit function
     const handleChange = (e) => {
-        // if (e.target.name === 'image_file') {
-        //     setFile(e.target.files[0]);
-        // } else {
         const tmp = { ...newPost };
         tmp[e.target.name] = e.target.value;
         if (e.target.name === 'image_url') {
@@ -86,7 +83,6 @@ const NewPostForm = () => {
         }
 
         setNewPost(tmp);
-        // }
     };
 
     const handleSubmit = (e) => {
@@ -119,7 +115,6 @@ const NewPostForm = () => {
             duration: longToastTime,
             isClosable: true,
         });
-        // }
     };
 
     return (
@@ -142,38 +137,6 @@ const NewPostForm = () => {
                         <Text as="i" mt={2} mb={4} w="100%" alignSelf="baseline" fontSize="sm">
                             Hint: Select text to format it
                         </Text>
-                        {/* <Tabs w="100%">
-                            <TabList>
-                                <Tab>Upload image</Tab>
-                                <Tab>Use image link</Tab>
-                            </TabList>
-                            <TabPanels>
-                                <TabPanel>
-                                    <input
-                                        type="file"
-                                        multiple={false}
-                                        accept="image/*"
-                                        name="image_file"
-                                        onChange={handleChange}
-                                    />
-                                </TabPanel>
-                                <TabPanel>
-                                    <FormControl mb={2} isInvalid={isValidLink == null ? false : !isValidLink}>
-                                        <FormLabel>Image</FormLabel>
-                                        <Input
-                                            type="url"
-                                            name="image_url"
-                                            placeholder="Add an image"
-                                            value={newPost.image_url}
-                                            onChange={handleChange}
-                                        />
-                                        <FormErrorMessage>
-                                            URL provided does not point to an image, or is not a URL.
-                                        </FormErrorMessage>
-                                    </FormControl>
-                                </TabPanel>
-                            </TabPanels>
-                        </Tabs> */}
 
                         <FormControl mb={2} isInvalid={isValidLink == null ? false : !isValidLink}>
                             <FormLabel>Image</FormLabel>

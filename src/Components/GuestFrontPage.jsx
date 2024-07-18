@@ -1,5 +1,4 @@
 import { Button, Flex, Heading, Image, Spacer, Text, useColorMode } from '@chakra-ui/react';
-import NewPostForm from './NewPostForm';
 
 //The front page for users that are not logged in
 const GuestFrontPage = ({ login, signup }) => {

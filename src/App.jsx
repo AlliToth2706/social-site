@@ -21,8 +21,9 @@ const emailRegex = new RegExp("[a-zA-Z0-9.! #$%&'*+/=? ^_`{|}~-]+@[a-zA-Z0-9.]+\
 
 const passwordRegex = new RegExp('^(?=.*[A-Z])(?=.*[!@#$&*])(?=.*[0-9])(?=.*[a-z]).{8,}$'); // Regex - 8+ chars long, 1 lowercase letter, 1 uppercase letter, one digit, and one special character
 
-// Make sure that everywhere has access to the currently logged in user.
+// Make sure that everywhere has access to the currently logged in user and posts when necessary.
 const UserContext = createContext();
+const PostContext = createContext();
 
 const textFilter = new Filter();
 
@@ -47,4 +48,14 @@ const App = () => {
 };
 
 export default App;
-export { UserContext, shortToastTime, longToastTime, emailRegex, imageRegex, passwordRegex, maxPostLength, textFilter };
+export {
+    UserContext,
+    PostContext,
+    shortToastTime,
+    longToastTime,
+    emailRegex,
+    imageRegex,
+    passwordRegex,
+    maxPostLength,
+    textFilter,
+};

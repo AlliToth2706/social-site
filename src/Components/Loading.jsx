@@ -1,8 +1,10 @@
 import { Spinner } from '@chakra-ui/react';
 
-//loading symbol
+/**
+ * Loading spinner when bool set to "false"
+ */
 const Loading = ({ bool, children }) => {
-    return bool ? children : <Spinner size='xl' />;
+    return bool ? children : <Spinner size="xl" />;
 };
 
 export default Loading;

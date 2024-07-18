@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { getAllPosts } from '../Data/posts';
 import Loading from './Loading';
 import Post from './Post';
-import { PostContext } from '../Pages/Forum';
+import { PostContext } from '../App';
 
 //Shows all posts by a user
 const UserPosts = ({ user }) => {

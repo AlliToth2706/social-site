@@ -51,13 +51,6 @@ const Navbar = ({ setUser, signup, login }) => {
         <Flex as="nav" align="center" variant="branding">
             {/* Branding */}
             <Button as={Link} to="/" variant="invisible">
-                {/* <Logo
-                    style={{
-                        fill: colorMode === 'light' ? 'black' : 'white',
-                        width: '50px',
-                        height: '50px',
-                    }}
-                /> */}
                 <Text variant="branding" ml={4}>
                     Social Website
                 </Text>

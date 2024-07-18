@@ -118,13 +118,17 @@ const getUsers = () => {
 const verifyUser = (email, pass) => {
     // Checks if the user is in the array of users
     for (const e of getUsers()) {
-        if (email === e.email && pass === e.password) {
-            setUser(e.email);
-            return true;
+        if (email === e.email) {
+            if (pass === e.password) {
+                setUser(e.email);
+                return { verified: true };
+            } else {
+                return { verified: false, reason: 'Incorrect password.' };
+            }
         }
     }
 
-    return false;
+    return { verified: false, reason: 'Unable to find account.' };
 };
 
 /**

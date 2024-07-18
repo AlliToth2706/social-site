@@ -1,11 +1,10 @@
 import { Divider, Flex, Heading, Spacer } from '@chakra-ui/react';
-import React, { useState, createContext, useEffect } from 'react';
+import React, { useState } from 'react';
 import Loading from '../Components/Loading';
 import NewPostForm from '../Components/NewPostForm';
 import Post from '../Components/Post';
 import { getAllPosts } from '../Data/posts';
-
-export const PostContext = createContext();
+import { PostContext } from '../App';
 
 /**
  * Forum component. Handles generic posts state and holds all sub-components.

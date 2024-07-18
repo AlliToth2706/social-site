@@ -44,8 +44,8 @@ const Footer = ({ login, signup }) => {
             </Flex>
             <Spacer />
             <Flex direction="column" align="start">
-                {/* <Text>Alli Toth s3902333 and Alex Aloi s3842524</Text>
-                <Text>2022 - FWP Assignment 2</Text> */}
+                <Text>Social Media Website</Text>
+                <Text>Created by Alli Toth 2022-2024</Text>
             </Flex>
             <Spacer />
         </Flex>

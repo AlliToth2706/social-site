@@ -7,7 +7,7 @@ import EditPostDialog from './EditPostDialog';
 import ReactionBar from './ReactionBar';
 import { getUserInfo } from '../Data/accounts';
 import { editPost, getAllPosts } from '../Data/posts';
-import { PostContext } from '../Pages/Forum';
+import { PostContext } from '../App';
 
 /**
  * Generates the posts on the forum, and handles the state for if it's being edited.

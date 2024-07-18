@@ -14,7 +14,7 @@ import { editPost, getAllPosts, removePost } from '../Data/posts';
 import Alert from './Alert';
 import { maxPostLength } from '../App';
 import Quill from './Quill';
-import { PostContext } from '../Pages/Forum';
+import { PostContext } from '../App';
 import { checkValidPost } from './NewPostForm';
 
 /**
@@ -30,8 +30,6 @@ const EditPostDialog = ({ original_post, id, setEditing }) => {
 
     const [isValidLink, setValidLink] = useState(null);
 
-    // const [file, setFile] = useState();
-
     const closeAndSync = () => {
         setEditing(false);
         setPosts(getAllPosts());
@@ -39,9 +37,6 @@ const EditPostDialog = ({ original_post, id, setEditing }) => {
 
     const handleChange = (e) => {
         e.preventDefault();
-        // if (e.target.name === 'image_file') {
-        //     setFile(e.target.files[0]);
-        // } else {
         let tmp = { ...post };
         tmp[e.target.name] = e.target.value;
 
@@ -50,7 +45,6 @@ const EditPostDialog = ({ original_post, id, setEditing }) => {
         }
 
         setPost(tmp);
-        // }
     };
 
     const handleSubmit = (e) => {
@@ -96,35 +90,6 @@ const EditPostDialog = ({ original_post, id, setEditing }) => {
                     <Quill value={post.text} textCallback={handleQuillChange} container="edit-post" />
                     <FormErrorMessage>The post must be {maxPostLength} characters at max.</FormErrorMessage>
                 </FormControl>
-
-                {/* <Tabs>
-                    <TabList>
-                        <Tab>Upload image</Tab>
-                        <Tab>Use image link</Tab>
-                    </TabList>
-                    <TabPanels>
-                        <TabPanel>
-                            <input
-                                type="file"
-                                multiple={false}
-                                accept="image/*"
-                                name="image_file"
-                                onChange={handleChange}
-                            />
-                        </TabPanel>
-                        <TabPanel>
-                            <FormControl mb={2} isInvalid={isValidLink == null ? false : !isValidLink}>
-                                <Input
-                                    type="url"
-                                    name="image_url"
-                                    value={post.image_url ?? ''}
-                                    placeholder="Add an Image link"
-                                    onChange={handleChange}
-                                />
-                            </FormControl>
-                        </TabPanel>
-                    </TabPanels>
-                </Tabs> */}
 
                 <FormControl mb={2} isInvalid={isValidLink == null ? false : !isValidLink}>
                     <Input

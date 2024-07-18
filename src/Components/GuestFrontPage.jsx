@@ -22,21 +22,16 @@ const GuestFrontPage = ({ login, signup }) => {
             <Flex justify="center" direction="row" w="100%" flex={1}>
                 <Flex w="50%" direction="column" h="100%">
                     <Heading size="md" m="2rem 0">
-                        What is Now?
+                        What is this website?
                     </Heading>
                     <Text w="90%">
-                        Now is a way for you to communicate with your coworkers Now. Many people from Loop Agile are
-                        already communicating using the forums, and even showing their flair and style by editing their
-                        profiles.
-                        <br style={{ marginBottom: '0.2rem' }} />
-                        Come and join the rest of the Loop Agile staff... Now!
+                        This is a way for you to communicate with your other people within our community. Many people
+                        are already communicating using the forums, and even showing their flair and style by editing
+                        their profiles.
                     </Text>
                 </Flex>
 
-                <Image
-                    src={`${process.env.PUBLIC_URL}/${colorMode}.png`}
-                    w="45%"
-                />
+                <Image src={`/social/${colorMode === 'light' ? 'light' : 'dark'}.png`} w="45%" />
             </Flex>
         </>
     );

@@ -14,7 +14,7 @@ const Footer = ({ login, signup }) => {
             <Spacer />
             <Flex direction="column" align="start">
                 <Button as={Link} variant="unstyled" to="/">
-                    Loop Agile Now
+                    Social Website
                 </Button>
                 <Button as={Link} variant="unstyled" to="/">
                     Home

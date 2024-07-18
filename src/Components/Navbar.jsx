@@ -1,6 +1,6 @@
 import { Box, Button, ButtonGroup, Flex, Spacer, Text, Tooltip, useColorMode } from '@chakra-ui/react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { removeUser } from '../Data/accounts';
+import { getUser, removeUser, verifyUser } from '../Data/accounts';
 import React, { useContext } from 'react';
 // import { ReactComponent as Logo } from '../logo.svg';
 import { UserContext } from '../App';
@@ -42,6 +42,11 @@ const Navbar = ({ setUser, signup, login }) => {
         navigate('/');
     };
 
+    const tempLogin = () => {
+        verifyUser('temp@temp.com', 'abc123');
+        setUser(getUser());
+    };
+
     return (
         <Flex as="nav" align="center" variant="branding">
             {/* Branding */}
@@ -54,7 +59,7 @@ const Navbar = ({ setUser, signup, login }) => {
                     }}
                 /> */}
                 <Text variant="branding" ml={4}>
-                    Loop Agile Now
+                    Social Website
                 </Text>
             </Button>
 
@@ -69,7 +74,6 @@ const Navbar = ({ setUser, signup, login }) => {
                             <NavbarLink to="/profile" variant="link" label="View Profile">
                                 manage_accounts
                             </NavbarLink>
-
                             <NavbarLink to="/forums" variant="link" label="Forums">
                                 forum
                             </NavbarLink>
@@ -80,6 +84,11 @@ const Navbar = ({ setUser, signup, login }) => {
                     ) : (
                         // Logged out navbar
                         <>
+                            <Tooltip label="Quick Login" closeOnMouseDown={false}>
+                                <Button variant="navbar" to="/" onClick={tempLogin}>
+                                    Quick Login (temp account)
+                                </Button>
+                            </Tooltip>
                             <NavbarLink onClick={signup} label="Sign Up">
                                 person_add
                             </NavbarLink>

@@ -91,7 +91,7 @@ const SignupDialog = ({ login, isOpen, onClose }) => {
             return;
         }
 
-        let verification = /*await*/ signUpUser(user);
+        let verification = signUpUser(user);
         // Sign up the user and check if was successful
         if (verification === true) {
             // Sets the user in localStorage
@@ -112,31 +112,22 @@ const SignupDialog = ({ login, isOpen, onClose }) => {
 
         // Sign up unsuccessful, email already exists
         else {
-            if (verification === 409) {
-                // removes password
-                setUser({
-                    email: user.email,
-                    first_name: user.first_name,
-                    last_name: user.last_name,
-                    password: '',
-                });
+            // removes password
+            setUser({
+                email: user.email,
+                first_name: user.first_name,
+                last_name: user.last_name,
+                password: '',
+            });
 
-                toast({
-                    title: 'Sign up failed.',
-                    description:
-                        'An account was found with the same email. Please choose a different email or log in instead if you have an account.',
-                    status: 'error',
-                    duration: longToastTime,
-                    isClosable: true,
-                });
-            } else {
-                toast({
-                    title: 'Sign up failed.',
-                    status: 'error',
-                    duration: longToastTime,
-                    isClosable: true,
-                });
-            }
+            toast({
+                title: 'Sign up failed.',
+                description:
+                    'An account was found with the same email. Please choose a different email or log in instead if you have an account.',
+                status: 'error',
+                duration: longToastTime,
+                isClosable: true,
+            });
         }
     };
 

@@ -17,11 +17,39 @@ const initialise = () => {
     // Create a default user for testing
     const users = [
         {
-            email: 'allitoth2706@outlook.com',
+            email: 'alli@github.com',
             password: 'abc123',
             visits: 0,
             first_name: 'alli',
-            last_name: 'toth',
+            last_name: '_',
+        },
+        {
+            email: 'temp@temp.com',
+            password: 'abc123',
+            visits: 0,
+            first_name: 'temp',
+            last_name: 'account',
+        },
+        {
+            email: 'person1@temp.com',
+            password: 'abc123',
+            visits: 0,
+            first_name: 'Person',
+            last_name: 'One',
+        },
+        {
+            email: 'person2@temp.com',
+            password: 'abc123',
+            visits: 0,
+            first_name: 'Person',
+            last_name: 'Two',
+        },
+        {
+            email: 'person3@temp.com',
+            password: 'abc123',
+            visits: 0,
+            first_name: 'Person',
+            last_name: 'Three',
         },
     ];
 
@@ -29,15 +57,14 @@ const initialise = () => {
     setUsers(users);
 
     // Add default bio information
-    setDefaultDetails('allitoth2706@outlook.com');
+    users.forEach((e) => {
+        setDefaultDetails(e.email);
+    });
 
     // Create a default post
     createPost({
-        email: 'allitoth2706@outlook.com',
-        text: 'Hello world!',
-        comments: [],
-        like: [],
-        image: '',
+        email: 'alli@github.com',
+        text: '<p>Hello world!</p>',
     });
 
     initialiseFollows();
@@ -92,7 +119,6 @@ const verifyUser = (email, pass) => {
     // Checks if the user is in the array of users
     for (const e of getUsers()) {
         if (email === e.email && pass === e.password) {
-            console.log('success');
             setUser(e.email);
             return true;
         }
@@ -109,11 +135,8 @@ const verifyUser = (email, pass) => {
 const signUpUser = (userInfo) => {
     // Get the users and check that the new user isn't a duplicate
     const users = getUsers();
-    users.forEach((e) => {
-        if (userInfo.email === e.email) {
-            return false;
-        }
-    });
+
+    if (users.some((e) => userInfo.email === e.email) === true) return false;
 
     // Clears out what was in localStorage before
     localStorage.removeItem(LS_USERS);
@@ -157,11 +180,11 @@ function removeUser() {
 
 /**
  * Deletes all information relating to a user from localStorage.
- * @param {string} username - The username of the user to be removed
+ * @param {string} email - The username of the user to be removed
  */
-function deleteAccount(username) {
+function deleteAccount(email) {
     let users = getUsers();
-    let newUsers = users.filter((e) => e.email !== username);
+    let newUsers = users.filter((e) => e.email !== email);
 
     setUsers(newUsers);
     removeUser();
@@ -170,17 +193,15 @@ function deleteAccount(username) {
 // addProfileVisit
 /**
  * Adds a visit to a user's profile
- * @param {string} username - The username of the user who has been visited
+ * @param {string} email - The username of the user who has been visited
  */
-function addProfileVisit(username) {
+function addProfileVisit(email) {
     const users = getUsers();
-    // console.log(users);
     for (const e of users) {
-        if (e.email === username) {
+        if (e.email === email) {
             ++e.visits;
         }
     }
-    // console.log(users);
 }
 
 export {

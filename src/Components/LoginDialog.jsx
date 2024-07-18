@@ -46,7 +46,7 @@ const LoginDialog = ({ login, isOpen, onClose }) => {
         }
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         // Verify the user and check if was successful
         if (!user.email || !user.password) {
             toast({
@@ -59,7 +59,7 @@ const LoginDialog = ({ login, isOpen, onClose }) => {
         }
 
         // login unsuccessful
-        let verification = /*await*/ verifyUser(user.email, user.password);
+        let verification = verifyUser(user.email, user.password);
 
         if (verification === 401) {
             toast({

@@ -9,16 +9,12 @@ import { useNavigate } from 'react-router-dom';
 /**
  * Sends all unknown routes to the home page.
  */
-const Redirect = ({ to }) => {
+const Redirect = ({ to = '/' }) => {
     let navigate = useNavigate();
 
     useEffect(() => {
         navigate(to);
     });
-};
-
-Redirect.defaultProps = {
-    to: '/',
 };
 
 export default Redirect;

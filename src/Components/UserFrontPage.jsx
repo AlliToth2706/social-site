@@ -35,7 +35,7 @@ const UserFrontPage = () => {
                         We were going to suggest some new people to follow, but you're following everyone.
                     </Text>
                 ) : (
-                    <Heading size="lg">Find new people on Now:</Heading>
+                    <Heading size="lg">Find new people on the site:</Heading>
                 )}
             </Box>
 
@@ -66,7 +66,7 @@ const UserElement = ({ user }) => {
         <Flex borderWidth="1px" borderRadius="lg" maxW={80} direction="row" padding="1rem" margin="0 1rem">
             <AvatarButton user={user} size="lg" margin="0 10px" />
             <Flex direction="column" padding="0 2rem">
-                <Text wordBreak="break-all" fontSize="lg" align="center">
+                <Text fontSize="lg" align="center">
                     {user.first_name} {user.last_name}
                 </Text>
                 <FollowButton from_user={User} to_user={user.email} state={isFollowed} setState={setIsFollowed} />

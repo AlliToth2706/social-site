@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 /**
  * Component to have an avatar with navigation to the user's profile
  */
-const AvatarButton = ({ user, size, margin }) => {
+const AvatarButton = ({ user, size = 'md', margin = '0' }) => {
     let navigate = useNavigate();
     return (
         <Avatar
@@ -16,11 +16,6 @@ const AvatarButton = ({ user, size, margin }) => {
             sx={{ cursor: 'pointer' }}
         />
     );
-};
-
-AvatarButton.defaultProps = {
-    size: 'md',
-    margin: '0',
 };
 
 export default AvatarButton;

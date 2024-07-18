@@ -7,7 +7,7 @@ import { addFollow, removeFollow } from '../Data/following';
  * Button to be able to follow and unfollow users
  * Used mainly to keep state of if the user has been followed or not
  */
-const FollowButton = ({ from_user, to_user, size, state, setState }) => {
+const FollowButton = ({ from_user, to_user, size = 'sm', state, setState }) => {
     const hasRendered = useRef(false);
     useEffect(() => {
         // Makes sure that if state is set to a number, to not send any API requests
@@ -24,10 +24,6 @@ const FollowButton = ({ from_user, to_user, size, state, setState }) => {
             {state ? 'Unfollow' : 'Follow'}
         </Button>
     );
-};
-
-FollowButton.defaultProps = {
-    size: 'sm',
 };
 
 export default FollowButton;

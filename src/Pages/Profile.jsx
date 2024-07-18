@@ -18,7 +18,6 @@ import {
     Tab,
     TabPanels,
     TabPanel,
-    Heading,
     Spinner,
 } from '@chakra-ui/react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -47,7 +46,7 @@ const EditProfile = ({ setUser }) => {
     // Gets the initial information
     useEffect(() => {
         (async () => {
-            let userDetails = /*await*/ getUserInfo(User);
+            let userDetails = getUserInfo(User);
             setInitialInformation(userDetails);
         })();
     }, [User]);
@@ -109,7 +108,7 @@ const EditProfile = ({ setUser }) => {
         }
 
         // Set the changed information
-        let worked = /*await*/ editUserInfo({ ...initialInformation, ...editingInformation });
+        let worked = editUserInfo({ ...initialInformation, ...editingInformation });
         if (!worked) {
             toast({
                 title: 'An error occurred.',
@@ -131,7 +130,7 @@ const EditProfile = ({ setUser }) => {
         // Close out of modal
         onCloseModal();
 
-        setInitialInformation(/*await*/ getUserInfo(initialInformation.email));
+        setInitialInformation(getUserInfo(initialInformation.email));
     };
 
     return (
@@ -207,6 +206,7 @@ const EditProfile = ({ setUser }) => {
  * E.g. could show a loading screen until setInitialInformation/setUserInformation isnt empty
  */
 const Profile = ({ setUser }) => {
+    // TODO: fix follow button on following page not being set correctly
     const loggedInUser = useContext(UserContext);
     const { User } = useParams();
 
@@ -227,19 +227,14 @@ const Profile = ({ setUser }) => {
 
     // Gets information from the database
     useEffect(() => {
-        // (async () => {
         // Gets the users that the current user is following, and the users that are following the user
-
-        setFollowings(/*await*/ getFollows(User));
-        setFollowers(/*await*/ getFollowsTo(User));
+        setFollowings(getFollows(User));
+        setFollowers(getFollowsTo(User));
 
         // Get all of the users
-        setUsers(/*await*/ getUsers());
-        console.log(getUsers());
-        // })();
+        setUsers(getUsers());
 
         // Sets the follow state
-        // if (User !== loggedInUser && isFollowed == null) getFollow(loggedInUser, User).then((e) => setIsFollowed(e));
         if (User !== loggedInUser && isFollowed == null) setIsFollowed(getFollow(loggedInUser, User));
 
         // On unmount, close the modal if it is open
@@ -360,14 +355,7 @@ const Profile = ({ setUser }) => {
                     </Flex>
 
                     <Flex direction="column" justify="center" align="center" mt={20} mb="5%">
-                        {User === loggedInUser || isFollowed ? (
-                            <>
-                                <Heading size="lg">
-                                    Posts by {u.first_name} {u.last_name}
-                                </Heading>
-                                <UserPosts user={User} />
-                            </>
-                        ) : null}
+                        {User === loggedInUser || isFollowed ? <UserPosts user={User} /> : null}
                     </Flex>
                 </Flex>
             ) : (
@@ -385,7 +373,11 @@ const UserPanel = ({ user, shouldShowFollow }) => {
 
     useEffect(() => {
         // if (isFollowed == null) getFollow(User, user.email).then((e) => setIsFollowed(e));
-        if (isFollowed == null) setIsFollowed(getFollow(User, user.email));
+        if (isFollowed == null) {
+            const isFollowing = getFollow(User, user.email);
+            console.log(isFollowing);
+            setIsFollowed(isFollowing);
+        }
     }, [isFollowed, User, user]);
 
     return (

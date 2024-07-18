@@ -5,7 +5,6 @@ import { getUsers } from './accounts';
 const LS_FOLLOWS = 'follows';
 
 const initialiseFollows = () => {
-    // console.log(localStorage.getItem(LS_FOLLOWS));
     if (localStorage.getItem(LS_FOLLOWS) !== null) return;
 
     setFollows({});
@@ -17,19 +16,8 @@ const initialiseFollows = () => {
  * @returns {array | number} Array of emails
  */
 const getFollows = (email) => {
-    // try {
-    //     let follows = (await client.get(`/${email}`)).data;
-
-    //     // Turns the array of objects into an array of strings
-    //     return follows.map((e) => {
-    //         return e.to_email;
-    //     });
-    // } catch (e) {
-    //     return e?.response.status ?? 0;
-    // }
     const allFollows = getAllFollows();
-    // console.log(allFollows);
-    return allFollows[email];
+    return allFollows[email] ?? [];
 };
 
 const getAllFollows = () => {
@@ -52,34 +40,23 @@ const setFollowsOfUser = (email, data) => {
  * @returns {array | number} Array of emails
  */
 const getFollowsTo = (email) => {
-    // try {
-    //     let follows = (await client.get(`/to/${email}`)).data;
-    //     // Turns the array of objects into an array of strings
-    //     return follows.map((e) => {
-    //         return e.from_email;
-    //     });
-    // } catch (e) {
-    //     return e?.response.status ?? 0;
-    // }
-    // todo: code this
+    const allFollows = getAllFollows();
+    const followers = [];
+    for (const [key, value] of Object.entries(allFollows)) {
+        if (value.includes(email)) {
+            followers.push(key);
+        }
+    }
+    return followers;
 };
 
 /**
  * Get if user is following another user
  * @param {string} from_email Email of the user that is the follower
  * @param {string} to_email Email of the user that is followed
- * @returns {boolean | number} If follow relation exists
+ * @returns {boolean} If follow relation exists
  */
-const getFollow = (from_email, to_email) => {
-    // try {
-    //     // Turns the array of objects into an array of strings
-    //     return (await client.get(`/${from_email}&${to_email}`)).data;
-    // } catch (e) {
-    //     return e?.response?.status ?? 0;
-    // }
-    // todo: code this
-    return true;
-};
+const getFollow = (from_email, to_email) => getFollows(from_email).some((e) => e === to_email);
 
 /**
  * Get the users the given user is not following
@@ -87,7 +64,6 @@ const getFollow = (from_email, to_email) => {
  * @returns {array} List of people the user is not following
  */
 const getNotFollowing = (email) => {
-    // im just gonna hope this works already
     // Gets all of the users and user emails the user follows
     let users = getUsers();
     let follows = getFollows(email);
@@ -111,20 +87,13 @@ const getNotFollowing = (email) => {
  * @returns {boolean} If the request succeeded
  */
 const addFollow = (from_email, to_email) => {
-    // try {
-    //     const res = await client.post('/', { from_email: from_email, to_email: to_email });
-    //     return res.data;
-    // } catch (e) {
-    //     return e?.response.status ?? 0;
-    // }
-
     const allFollows = getAllFollows();
     // console.log(allFollows);
     const follows = allFollows[from_email] ?? [];
     follows.push(to_email);
     setFollowsOfUser(from_email, follows);
 
-    // todo: see if need to actually return anything from here
+    // TODO: see if need to actually return anything from here
 };
 
 /**
@@ -134,13 +103,6 @@ const addFollow = (from_email, to_email) => {
  * @returns {boolean} If the request succeeded
  */
 const removeFollow = async (from_email, to_email) => {
-    // try {
-    //     const res = await client.delete('/', { data: { from_email: from_email, to_email: to_email } });
-    //     return res.status === 200;
-    // } catch (e) {
-    //     return e?.response.status ?? 0;
-    // }
-
     // https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript
     const follows = getFollows(from_email);
     let index = follows.indexOf(to_email);
@@ -149,6 +111,7 @@ const removeFollow = async (from_email, to_email) => {
     }
     // return follows;
     setFollowsOfUser(from_email, follows);
+    // TODO: see if need to actually return anything from here
 };
 
 export { getFollows, getFollowsTo, getNotFollowing, addFollow, removeFollow, getFollow, initialiseFollows };

@@ -1,61 +1,77 @@
 import { Box, Button, ButtonGroup, Center, Stack } from '@chakra-ui/react';
-import React, { useEffect, useState } from 'react';
-import {
-    addReaction,
-    getAllPostReactions,
-    getUserPostReactions,
-    reactionTypes,
-    stripUserReactionsFromPost,
-} from '../Data/reactions';
+import React, { useState } from 'react';
+import { getUserPostReactions, reactionTypes } from '../Data/reactions';
 
-//Displays all reactions that can appear on a post, and allows interaction with them
-const ReactionBar = ({ postId, userEmail }) => {
-    const [userReactions, setUserReactions] = useState([]);
-    const [reactionAmount, setReactionAmount] = useState({});
+// Displays all reactions that can appear on a post, and allows interaction with them
+const ReactionBar = ({ user, post, editInfo }) => {
+    // Get initial reaction information
+    const [userReaction, setUserReaction] = useState(getUserPostReactions(post, user));
+    const [reactionAmount, setReactionAmount] = useState({
+        like: post.reactions['like'].length,
+        dislike: post.reactions['dislike'].length,
+    });
 
     const refreshRatings = () => {
-        getAllPostReactions(postId, userEmail).then(e => {
-            if (typeof(e) === "object") setReactionAmount(e);
-        });
-        getUserPostReactions(postId, userEmail).then(e => {
-            if (Array.isArray(e)) setUserReactions(e);
-        });
+        setReactionAmount({ like: post.reactions['like'].length, dislike: post.reactions['dislike'].length });
     };
 
-    useEffect(() => {
-        refreshRatings();
-        // eslint-disable-next-line
-    }, []);
+    const removeUserReactFromPost = () => {
+        // Get all the reactions for the post
+        const reacts = post.reactions;
+        // Remove the user from the reaction
 
-    const reactionCallback = async (reactionType) => {
-        if (userReactions.includes(reactionType)) {
-            await stripUserReactionsFromPost(postId, userEmail);
+        Object.keys(reactionTypes).forEach((reactionType) => {
+            reacts[reactionType].splice(
+                reacts[reactionType].findIndex((e) => e === user),
+                1
+            );
+        });
+
+        // Edit accordingly
+        editInfo(reacts);
+        setUserReaction(null);
+    };
+
+    const addUserReactToPost = (reactionType) => {
+        // Get all the reactions for the post
+        const reacts = post.reactions;
+        // Remove the user from the reaction
+        reacts[reactionType].push(user);
+
+        // Edit accordingly
+        editInfo(reacts);
+        setUserReaction(reactionType);
+    };
+
+    const reactionCallback = (reactionType) => {
+        if (userReaction === reactionType) {
+            removeUserReactFromPost();
         } else {
-            if (userReactions.length !== 0) {
-                await stripUserReactionsFromPost(postId, userEmail);
+            if (userReaction != null) {
+                removeUserReactFromPost();
             }
-            await addReaction(postId, userEmail, reactionType);
+            addUserReactToPost(reactionType);
         }
         refreshRatings();
     };
 
     return (
-        <ButtonGroup spacing='0'>
+        <ButtonGroup spacing="0">
             {Object.keys(reactionTypes).map((reaction, i) => {
                 return (
                     <Stack key={i}>
                         <Box>
                             <Button
-                                variant={userReactions.includes(reaction) ? 'reaction' : 'navbar'}
-                                className='material-icons'
-                                size='sm'
+                                variant={userReaction === reaction ? 'reaction' : 'navbar'}
+                                className="material-icons"
+                                size="sm"
                                 onClick={() => reactionCallback(reaction)}
                                 key={reaction}
                             >
                                 {reactionTypes[reaction].materialIconName}
                             </Button>
                         </Box>
-                        <Center>{reactionAmount[reaction] === undefined ? 0 : reactionAmount[reaction]}</Center>
+                        <Center>{reactionAmount[reaction]}</Center>
                     </Stack>
                 );
             })}

@@ -102,7 +102,7 @@ const addFollow = (from_email, to_email) => {
  * @param {string} to_email The email of the user that will no longer be followed
  * @returns {boolean} If the request succeeded
  */
-const removeFollow = async (from_email, to_email) => {
+const removeFollow = (from_email, to_email) => {
     // https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript
     const follows = getFollows(from_email);
     let index = follows.indexOf(to_email);

@@ -16,9 +16,7 @@ const UserFrontPage = () => {
     const [user, setUser] = useState(null);
     const [notFollowed, setNotFollowed] = useState(null);
     useEffect(() => {
-        // (async () => setUser(await getUserInfo(User)))();
         setUser(getUserInfo(User));
-        // (async () => setNotFollowed(await getNotFollowing(User)))();
         setNotFollowed(getNotFollowing(User));
     }, [User]);
     return (

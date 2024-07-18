@@ -59,7 +59,7 @@ const SignupDialog = ({ login, isOpen, onClose }) => {
         }
     };
 
-    const handleSubmit = async () => {
+    const handleSubmit = () => {
         if (!user.first_name || !user.last_name || !user.email || !user.password) {
             toast({
                 title: 'Please enter your details.',

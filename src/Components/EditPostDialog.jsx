@@ -53,26 +53,12 @@ const EditPostDialog = ({ original_post, id, setEditing }) => {
         // }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         if (!checkValidPost(post.text, isInvalid, toast)) return;
 
-        // if (file != null) {
-        //     const uploaded = await upload(file);
-        //     setPost({ ...post, image_url: uploaded });
-        // } else if (isValidLink === false) {
-        //     toast({
-        //         title: 'Avatar URL not valid.',
-        //         status: 'error',
-        //         duration: shortToastTime,
-        //         isClosable: true,
-        //     });
-        //     return;
-        // }
-
         // Makes a new post with the information given
-        // console.log(post);
         editPost({ ...original_post, ...post }, id);
         closeAndSync();
 

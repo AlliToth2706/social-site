@@ -89,41 +89,11 @@ const NewPostForm = () => {
         // }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         if (!checkValidPost(newPost.text, isInvalid, toast)) return;
 
-        // if (file != null) {
-        //     const uploaded = await upload(file);
-
-        //     if (typeof uploaded !== 'string') {
-        //         toast({
-        //             title: 'Image upload failed.',
-        //             description: 'Try using a link, or try again later',
-        //             status: 'error',
-        //             duration: shortToastTime,
-        //             isClosable: true,
-        //         });
-
-        //         return;
-        //     }
-
-        //     // Makes a new post with the information given
-        //     createPost({ ...newPost, image_url: uploaded });
-        //     setPosts(getAllPosts());
-
-        //     // Sets the new post back to blank
-        //     setNewPost(blankPost);
-
-        //     // Lets the user know their action was successful
-        //     toast({
-        //         title: `New ${postText} created.`,
-        //         status: 'success',
-        //         duration: longToastTime,
-        //         isClosable: true,
-        //     });
-        // } else {
         if (isValidLink === false) {
             toast({
                 title: 'Image URL not valid.',

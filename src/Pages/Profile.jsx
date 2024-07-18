@@ -45,7 +45,7 @@ const EditProfile = ({ setUser }) => {
 
     // Gets the initial information
     useEffect(() => {
-        (async () => {
+        (() => {
             let userDetails = getUserInfo(User);
             setInitialInformation(userDetails);
         })();
@@ -53,7 +53,7 @@ const EditProfile = ({ setUser }) => {
 
     // Makes sure that the information on the editing page is accurate to what is in the database
     useEffect(() => {
-        (async () => {
+        (() => {
             setEditingInformation({
                 first_name: initialInformation.first_name,
                 last_name: initialInformation.last_name,
@@ -84,7 +84,7 @@ const EditProfile = ({ setUser }) => {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
 
         if (!editingInformation.first_name || !editingInformation.last_name) {

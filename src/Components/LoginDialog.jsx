@@ -1,5 +1,5 @@
 import { verifyUser, getUser } from '../Data/accounts';
-import { useRef, useState } from 'react';
+import { useState } from 'react';
 import { useToast, FormControl, FormLabel, FormErrorMessage, FormHelperText, Input, Button } from '@chakra-ui/react';
 import { shortToastTime, longToastTime, emailRegex } from '../App';
 import Modal from './Modal';

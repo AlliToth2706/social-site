@@ -9,6 +9,14 @@ import { isFollowing, getNotFollowing } from '../Data/following';
 import FollowButton from './FollowButton';
 import AvatarButton from './AvatarButton';
 import Loading from './Loading';
+import AliceCarousel from 'react-alice-carousel';
+import 'react-alice-carousel/lib/alice-carousel.css';
+
+const responsive = {
+    0: { items: 2, itemsFit: undefined },
+    768: { items: 3, itemsFit: undefined },
+    1024: { items: 4, itemsFit: undefined },
+};
 
 //This is the front page for a logged in user
 const UserFrontPage = () => {
@@ -20,7 +28,7 @@ const UserFrontPage = () => {
         setNotFollowed(getNotFollowing(User));
     }, [User]);
     return (
-        <Flex align="center" direction="column" mt="6">
+        <Flex align="center" direction="column" mt="6" w="full">
             {user != null && (
                 <Heading size="md">
                     Welcome, {user.first_name} {user.last_name}!
@@ -36,14 +44,21 @@ const UserFrontPage = () => {
                     <Heading size="lg">Find new people on the site:</Heading>
                 )}
             </Box>
-            {/* TODO: Make this area a carousel */}
-            <Flex direction="row">
+            <Flex direction="row" w="100%">
                 <Loading bool={notFollowed}>
-                    {notFollowed?.map((u, i) => (
-                        <React.Fragment key={i}>
-                            <UserElement user={u} />
-                        </React.Fragment>
-                    ))}
+                    <Box w="100%">
+                        <AliceCarousel
+                            items={notFollowed?.map((u, i) => (
+                                <React.Fragment key={i}>
+                                    <UserElement user={u} />
+                                </React.Fragment>
+                            ))}
+                            responsive={responsive}
+                            mouseTracking
+                            disableDotsControls
+                            // autoWidth
+                        />
+                    </Box>
                 </Loading>
             </Flex>
         </Flex>

@@ -14,6 +14,7 @@
     "framer-motion": "^11.3.2",
     "imgur": "^2.4.2",
     "react": "^18.3.1",
+    "react-alice-carousel": "^2.9.1",
     "react-dom": "^18.3.1",
     "react-quill": "github:lassespilling/react-quill-2024#package",
     "react-router-dom": "^6.24.1",

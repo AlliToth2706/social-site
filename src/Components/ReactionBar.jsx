@@ -4,22 +4,26 @@ import { getUserPostReactions, reactionTypes } from '../Data/reactions';
 
 // Displays all reactions that can appear on a post, and allows interaction with them
 const ReactionBar = ({ user, post, editInfo }) => {
+    // Formats post reaction info to an object with the amounts for each reaction
+    const getReactionAmountObject = () => {
+        const reactionInfo = {};
+        Object.keys(reactionTypes).forEach((reaction) => (reactionInfo[reaction] = post.reactions[reaction].length));
+        return reactionInfo;
+    };
+
     // Get initial reaction information
     const [userReaction, setUserReaction] = useState(getUserPostReactions(post, user));
-    const [reactionAmount, setReactionAmount] = useState({
-        like: post.reactions['like'].length,
-        dislike: post.reactions['dislike'].length,
-    });
+    const [reactionAmount, setReactionAmount] = useState(getReactionAmountObject());
 
     const refreshRatings = () => {
-        setReactionAmount({ like: post.reactions['like'].length, dislike: post.reactions['dislike'].length });
+        setReactionAmount(getReactionAmountObject());
     };
 
     const removeUserReactFromPost = () => {
         // Get all the reactions for the post
         const reacts = post.reactions;
-        // Remove the user from the reaction
 
+        // Remove the user from the reaction
         Object.keys(reactionTypes).forEach((reactionType) => {
             reacts[reactionType].splice(
                 reacts[reactionType].findIndex((e) => e === user),

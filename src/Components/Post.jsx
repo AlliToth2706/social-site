@@ -24,7 +24,6 @@ const Post = ({ post, id }) => {
     const [isEditing, setEditing] = useState(false);
 
     const editReactionInfo = (reaction) => {
-        console.log(reaction);
         editPost({ ...post, reactions: reaction }, id);
         setPosts(getAllPosts());
     };
@@ -85,26 +84,26 @@ const Post = ({ post, id }) => {
 
                 {/* reactions and comment form */}
                 <Flex direction="row" align="center" justify="center" w="full">
-                    <ReactionBar post={post} user={User} editInfo={(reaction) => editReactionInfo(reaction)} />
+                    <ReactionBar post={post} user={User} editInfo={editReactionInfo} />
                     <Spacer />
                     <CommentForm parent_id={id} />
                 </Flex>
             </>
 
             {/* Comments */}
-            {post?.comments?.map((comment, comment_id) => {
+            {post?.comments?.map((comment, c_id) => {
                 return (
-                    <Flex key={comment_id} direction="column">
-                        <Comment comment={comment} post_id={id} comment_id={comment_id} />
+                    <Flex key={c_id} direction="column">
+                        <Comment comment={comment} post_id={id} comment_id={c_id} />
                         <Box pl={4}>
-                            {comment.replies.map((reply, r_id) => {
+                            {comment?.replies?.map((reply, r_id) => {
                                 return (
                                     <React.Fragment key={r_id}>
                                         <Comment
                                             comment={reply}
-                                            isReply={true}
+                                            is_reply={true}
                                             post_id={id}
-                                            comment_id={comment_id}
+                                            comment_id={c_id}
                                             reply_id={r_id}
                                         />
                                     </React.Fragment>

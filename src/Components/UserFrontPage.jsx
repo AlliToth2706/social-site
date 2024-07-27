@@ -5,7 +5,7 @@ import React, { useContext } from 'react';
 import { getUserInfo } from '../Data/accounts';
 import { useEffect } from 'react';
 import { useState } from 'react';
-import { getFollow, getNotFollowing } from '../Data/following';
+import { isFollowing, getNotFollowing } from '../Data/following';
 import FollowButton from './FollowButton';
 import AvatarButton from './AvatarButton';
 import Loading from './Loading';
@@ -36,7 +36,7 @@ const UserFrontPage = () => {
                     <Heading size="lg">Find new people on the site:</Heading>
                 )}
             </Box>
-
+            {/* TODO: Make this area a carousel */}
             <Flex direction="row">
                 <Loading bool={notFollowed}>
                     {notFollowed?.map((u, i) => (
@@ -56,8 +56,8 @@ const UserElement = ({ user }) => {
     const [isFollowed, setIsFollowed] = useState(null);
 
     useEffect(() => {
-        // if (isFollowed == null) getFollow(User, user.email).then((e) => setIsFollowed(e));
-        if (isFollowed == null) setIsFollowed(getFollow(User, user.email));
+        // if (isFollowed == null) isFollowing(User, user.email).then((e) => setIsFollowed(e));
+        if (isFollowed == null) setIsFollowed(isFollowing(User, user.email));
     }, [isFollowed, User, user.email]);
 
     return (

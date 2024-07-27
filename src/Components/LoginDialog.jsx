@@ -10,8 +10,6 @@ import Modal from './Modal';
 const LoginDialog = ({ login, isOpen, onClose }) => {
     const [user, setUser] = useState({ email: '', password: '' });
     const [isValidEmail, setValidEmail] = useState(null);
-    const mfaRefs = useRef([]);
-    mfaRefs.current = [];
 
     const toast = useToast();
 

@@ -7,6 +7,22 @@ const LS_USERS = 'users';
 const LS_USER = 'user';
 
 /**
+ * Users data
+ * [ {
+ *   email
+ *   password
+ *   visits
+ *   first_name
+ *   last_name
+ *   time (creation date)
+ *   bio
+ *   avatar
+ * } ]
+ *
+ * User - email of currently logged in user
+ */
+
+/**
  * Initialises the localStorage so that there is some information already available.
  */
 const initialise = () => {
@@ -65,32 +81,31 @@ const initialise = () => {
     createPost({
         email: 'alli@github.com',
         text: '<p>Hello world!</p>',
+        reactions: { like: ['person3@temp.com'], dislike: [] },
+        comments: [
+            {
+                email: 'person2@temp.com',
+                comment: '<p>Hello!</p>',
+                reactions: { like: ['person3@temp.com'], dislike: [] },
+                replies: [],
+            },
+            {
+                email: 'person1@temp.com',
+                comment: '<p>Hey! Good to see you on here!</p>',
+                reactions: { like: ['person3@temp.com'], dislike: [] },
+                replies: [
+                    {
+                        email: 'alli@github.com',
+                        comment: '<p>Likewise! :D</p>',
+                        reactions: { like: ['person3@temp.com'], dislike: [] },
+                    },
+                ],
+            },
+        ],
     });
 
     initialiseFollows();
 };
-
-/**
- * The function description goes here.
- * @param {string} email - The email to change to
- */
-// const changeEmail = (user, email) => {
-//     let users = getUsers();
-//     // users[users.findIndex((e) => e.username === user)].email = email;
-//     users[users.findIndex((e) => e.email === email)].email = email;
-
-//     setUsers(users);
-// };
-
-/**
- * Getter for the email of the user given.
- * @param {string} user - The username of the user whose email is being got
- * @return {string} The email of the user given
- */
-// const getUserEmail = (user) => {
-//     let users = getUsers();
-//     return users[users.findIndex((e) => e.username === user)].email;
-// };
 
 /**
  * Sets the users in localStorage with the given array.
@@ -101,13 +116,10 @@ const setUsers = (users) => {
 };
 
 /**
- * Getter for the users array.
+ * Gets the information of the registered users.
  * @return {array} An array of the user objects
  */
-const getUsers = () => {
-    // Extract user data from local storage and convert data to objects.
-    return JSON.parse(localStorage.getItem(LS_USERS));
-};
+const getUsers = () => JSON.parse(localStorage.getItem(LS_USERS));
 
 /**
  * Verifies if the email and password given match the information in localStorage.
@@ -137,13 +149,11 @@ const verifyUser = (email, pass) => {
  * @return {boolean} Whether or not the user was signed up (i.e. if the email was already used)
  */
 const signUpUser = (userInfo) => {
-    // Get the users and check that the new user isn't a duplicate
+    // Get all users registered to the website
     const users = getUsers();
 
+    // Checks that the email isn't already in use
     if (users.some((e) => userInfo.email === e.email) === true) return false;
-
-    // Clears out what was in localStorage before
-    localStorage.removeItem(LS_USERS);
 
     // Adds new user to the array
     users.push({ ...userInfo, visits: 0 });
@@ -155,58 +165,55 @@ const signUpUser = (userInfo) => {
     setUser(userInfo.email);
 
     // Sets the information that displays in the Profile component
-    setDefaultDetails(userInfo.username);
+    setDefaultDetails(userInfo.email);
     return true;
 };
 
 /**
  * Sets the logged in user in localStorage.
- * @param {string} user - The username of the logged in user
+ * @param {string} email - The email of the logged in user
  */
-const setUser = (user) => {
-    localStorage.setItem(LS_USER, user);
+const setUser = (email) => {
+    localStorage.setItem(LS_USER, email);
 };
 
 /**
  * Gets the logged in user from localStorage
  * @return {string} The logged in user
  */
-const getUser = () => {
-    return localStorage.getItem(LS_USER);
-};
+const getUser = () => localStorage.getItem(LS_USER);
 
 /**
  * Removes the logged in user from localStorage.
  */
-function removeUser() {
+const removeUser = () => {
     localStorage.removeItem(LS_USER);
-}
+};
 
 /**
  * Deletes all information relating to a user from localStorage.
- * @param {string} email - The username of the user to be removed
+ * @param {string} email - The email of the user to be removed
  */
-function deleteAccount(email) {
-    let users = getUsers();
-    let newUsers = users.filter((e) => e.email !== email);
-
-    setUsers(newUsers);
+const deleteAccount = (email) => {
+    // Filters the email from the array of users
+    setUsers(getUsers().filter((e) => e.email !== email));
     removeUser();
-}
+};
 
-// addProfileVisit
 /**
  * Adds a visit to a user's profile
- * @param {string} email - The username of the user who has been visited
+ * @param {string} email - The email of the user who has been visited
  */
-function addProfileVisit(email) {
+const addProfileVisit = (email) => {
     const users = getUsers();
     for (const e of users) {
         if (e.email === email) {
             ++e.visits;
+            break;
         }
     }
-}
+    setUsers(users);
+};
 
 export {
     initialise,
@@ -215,8 +222,6 @@ export {
     removeUser,
     signUpUser,
     deleteAccount,
-    // changeEmail,
-    // getUserEmail,
     getDetails as getUserInfo,
     changeDetails as editUserInfo,
     getUsers,

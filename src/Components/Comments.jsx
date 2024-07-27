@@ -1,4 +1,4 @@
-import { addComment, addReply, editComment, editReply, getAllPosts, removeComment, removeReply } from '../Data/posts';
+import { createComment, createReply, editComment, editReply, getAllPosts, removeComment, removeReply } from '../Data/posts';
 import { Box, Button, ButtonGroup, Flex, FormControl, Spacer, Text, useDisclosure, useToast } from '@chakra-ui/react';
 import React, { useContext, useState } from 'react';
 import { textFilter, UserContext } from '../App';
@@ -36,12 +36,12 @@ const CommentForm = ({ parent_id, comment_id = null, type = 'comment', setIsRepl
 
         if (type === 'reply') {
             // Adds comment to the array
-            addReply(parent_id, comment_id, { email: User, comment: newComment });
+            createReply(parent_id, comment_id, { email: User, comment: newComment });
 
             // Hides the reply box on submit
             setIsReplying(false);
         } else
-            addComment(parent_id, {
+            createComment(parent_id, {
                 email: User,
                 comment: newComment,
                 replies: [],
@@ -215,7 +215,7 @@ const Comment = ({ comment, is_reply = false, post_id, comment_id, reply_id = nu
                             )}
                         </Flex>
                         <Spacer />
-                        <ReactionBar user={User} post={comment} editInfo={(reaction) => editReactionInfo(reaction)} />
+                        <ReactionBar user={User} post={comment} editInfo={editReactionInfo} />
                     </Flex>
 
                     {isReplying && (

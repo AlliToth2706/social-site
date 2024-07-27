@@ -1,16 +1,7 @@
-// import axios from 'axios';
-// import env from 'react-dotenv';
+import { getAllPosts, editPost } from './posts';
 
-// import { editComment, editPost, getAllPosts } from './posts';
-
-// const client = axios.create({
-//     baseURL: `${env.BACKEND_URL}/reactions`,
-// });
-
-// const LS_POSTS = 'posts';
-
-//The reactions available in Social Website
-//Has a name, and a material icon
+// The reactions available in Social Website
+// Has a name, and a material icon
 const reactionTypes = {
     like: {
         symbol: Symbol('like'),
@@ -23,30 +14,53 @@ const reactionTypes = {
 };
 
 /**
- * Gets all reactions on a post
- * @param {postId} int The id of the post
- * @return {object} an object that represents the count of reactions by reactiontype
+ * Gets the reaction a user has put on a post
+ * @param {object} post The post to check the reactions of
+ * @param {string} email The user to check the reaction of
+ * @returns
  */
-// const getAllPostReactions = (post) => {
-//     return posts.reactions;
-// };
-
-/**
- * Gets all reactions on a post by a user
- * @param {postId} int The id of the post
- * @param {userEmail} string The email of the user
- * @return {array} an array of reactions types by the user on the post
- */
-const getUserPostReactions = (post, userEmail) => {
+const getUserPostReactions = (post, email) => {
     const reactions = post.reactions;
     let userReaction = null;
-    Object.keys(reactionTypes).forEach((reaction) => {
-        if (reactions[reaction].includes(userEmail)) {
+    for (const reaction in reactionTypes) {
+        if (reactions[reaction].includes(email)) {
             userReaction = reaction;
+            break;
         }
-    });
+    }
 
     return userReaction;
 };
 
-export { reactionTypes, getUserPostReactions };
+/**
+ * Removes all reactions a user has given to all posts
+ * @param {string} email Email of the user to remove information of
+ */
+const removeAllReactionsFromUser = (email) => {
+    const posts = getAllPosts();
+    posts.forEach((p, i) => {
+        p.comments.map((c) => {
+            c.replies.map((r) => {
+                // Remove the user from all replies for each reaction type
+                Object.keys(reactionTypes).forEach((reaction) => {
+                    r.reactions[reaction] = r.reactions[reaction].filter((e) => e !== email);
+                });
+                return r;
+            });
+            // Remove the user from all comments for each reaction type
+            Object.keys(reactionTypes).forEach((reaction) => {
+                c.reactions[reaction] = c.reactions[reaction].filter((e) => e !== email);
+            });
+            return c;
+        });
+        // Remove the user from all posts for each reaction type
+        Object.keys(reactionTypes).forEach((reaction) => {
+            p.reactions[reaction] = p.reactions[reaction].filter((e) => e !== email);
+        });
+
+        // Replaces the post information for each post
+        editPost(p, i);
+    });
+};
+
+export { reactionTypes, getUserPostReactions, removeAllReactionsFromUser };

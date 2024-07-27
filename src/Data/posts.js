@@ -1,8 +1,26 @@
-import imgur from 'imgur';
-
 const LS_POSTS = 'posts';
 
 const defaultReactions = { like: [], dislike: [] };
+
+/**
+ * Posts data
+ * {
+ *   email: string,
+ *   text: string,
+ *   timestamp: Date,
+ *   reactions: {like: [], dislike: []} lists of users who have liked the post
+ *   comments: {
+ *     email: string,
+ *     comment: string,
+ *     reactions: {},
+ *     replies: {
+ *       email: string,
+ *       comment: string,
+ *       reactions: {},
+ *     }
+ *   }
+ * }
+ */
 
 /**
  * Gets all of the posts in localStorage and returns them
@@ -10,55 +28,6 @@ const defaultReactions = { like: [], dislike: [] };
  */
 const getAllPosts = () => {
     return JSON.parse(localStorage.getItem(LS_POSTS)) ?? [];
-};
-
-/**
- * Creates a post in localStorage from the given information
- * @param {object} info - An object with all of the post information
- */
-const createPost = (info) => {
-    let posts = getAllPosts();
-    info.timestamp = new Date();
-    info.reactions = { like: [], dislike: [] };
-    info.comments = [];
-    posts.push(info);
-
-    replacePosts(posts);
-};
-
-/**
- * Replaces the post of the given postId with the info given.
- * @param {object} info - The information of the post
- * @param {number} postId - The numerical id of the post
- */
-const editPost = (info, postId) => {
-    let posts = getAllPosts();
-    posts[postId] = info;
-
-    replacePosts(posts);
-};
-
-/**
- * Removes the post using the postId given
- * @param {number} postId - The numerical id of the post
- */
-const removePost = (postId) => {
-    let posts = getAllPosts();
-
-    // Removes the specific index and replace posts
-    posts.splice(postId, 1);
-    replacePosts(posts);
-};
-
-/**
- * Removes all of the posts that have the user as the username given
- * @param {string} username - The username of the poster whose posts will be deleted
- */
-const removePostsByUser = (username) => {
-    let posts = getAllPosts();
-    let newPosts = posts.filter((e) => e.username !== username);
-
-    replacePosts(newPosts);
 };
 
 /**
@@ -71,18 +40,69 @@ const replacePosts = (posts) => {
 };
 
 /**
+ * Creates a post in localStorage from the given information
+ * @param {object} info - An object with all of the post information
+ */
+const createPost = (info) => {
+    let posts = getAllPosts();
+    info.timestamp = new Date();
+    info.reactions = info.reactions ?? defaultReactions;
+    info.comments = info.comments ?? [];
+    posts.push(info);
+
+    replacePosts(posts);
+};
+
+/**
+ * Replaces the post of the given id with the info given.
+ * @param {object} info - The information of the post
+ * @param {number} id - The numerical id of the post
+ */
+const editPost = (info, id) => {
+    let posts = getAllPosts();
+    posts[id] = info;
+
+    replacePosts(posts);
+};
+
+/**
+ * Removes the post using the id given
+ * @param {number} id - The numerical id of the post
+ */
+const removePost = (id) => {
+    let posts = getAllPosts();
+
+    // Removes the specific index and replace posts
+    posts.splice(id, 1);
+    replacePosts(posts);
+};
+
+/**
+ * Removes all of the posts that have the user as the email given
+ * @param {string} email - The email of the poster whose posts will be deleted
+ */
+const removePostsByUser = (email) => {
+    let posts = getAllPosts();
+    let newPosts = posts.filter((e) => e.email !== email);
+
+    replacePosts(newPosts);
+};
+
+/**
  * The function description goes here.
- * @param {number} parent_id - The numerical id the post's parent
+ * @param {number} post_id - The numerical id the post's parent
  * @param {object} comment - The object of the comment being added
  */
-const addComment = (parent_id, comment) => {
+const createComment = (post_id, comment) => {
     // Grabs the posts in local storage
     let posts = getAllPosts();
 
-    comment.reactions = defaultReactions;
+    // Set variables if they have not been set already
+    comment.reactions = comment.reactions??defaultReactions;
+    comment.replies = comment.replies?? [];
 
     // Adds the comment to the array
-    posts[parent_id].comments.push(comment);
+    posts[post_id].comments.push(comment);
 
     // Puts the new posts information into local storage
     replacePosts(posts);
@@ -90,16 +110,16 @@ const addComment = (parent_id, comment) => {
 
 /**
  * Changes a comment on a post to the be whatever is passed through.
- * @param {number} parent_id - The numerical id of the reply's parent post
+ * @param {number} post_id - The numerical id of the reply's parent post
  * @param {number} comment_id - The numerical id of the reply's parent comment
- * @param {object} commentInfo - The object of the comment being added
+ * @param {object} info - The object of the comment being added
  */
-const editComment = (parent_id, comment_id, commentInfo) => {
+const editComment = (post_id, comment_id, info) => {
     // Grabs the posts in local storage
     let posts = getAllPosts();
 
     // Change the comment in the array
-    posts[parent_id].comments[comment_id] = { ...posts[parent_id].comments[comment_id], ...commentInfo };
+    posts[post_id].comments[comment_id] = { ...posts[post_id].comments[comment_id], ...info };
 
     // Puts the new posts information into local storage
     replacePosts(posts);
@@ -107,15 +127,15 @@ const editComment = (parent_id, comment_id, commentInfo) => {
 
 /**
  * Removes a comment from the post given.
- * @param {number} postId - The numerical postId of the post
- * @param {number} commentId - The numerical id of the comment
+ * @param {number} post_id - The numerical id of the post
+ * @param {number} comment_id - The numerical id of the comment
  */
-const removeComment = (postId, commentId) => {
+const removeComment = (post_id, comment_id) => {
     // Grabs the posts in local storage
     let posts = getAllPosts();
 
     // Removes the comment to the array
-    posts[postId].comments.splice(commentId, 1);
+    posts[post_id].comments.splice(comment_id, 1);
 
     // Puts the new posts information into local storage
     replacePosts(posts);
@@ -123,18 +143,18 @@ const removeComment = (postId, commentId) => {
 
 /**
  * Adds a reply to the comment given.
- * @param {number} post_id - The numerical postId of the post
+ * @param {number} post_id - The numerical id of the post
  * @param {number} comment_id - The numerical id of the comment
- * @param {object} reply - The object of the reply being added
+ * @param {object} info - The object of the reply being added
  */
-const addReply = (post_id, comment_id, reply) => {
+const createReply = (post_id, comment_id, info) => {
     // Grabs the posts in local storage
     let posts = getAllPosts();
 
-    reply.reactions = defaultReactions;
+    info.reactions = defaultReactions;
 
     // Adds the comment to the array
-    posts[post_id].comments[comment_id].replies.push(reply);
+    posts[post_id].comments[comment_id].replies.push(info);
 
     // Puts the new posts information into local storage
     replacePosts(posts);
@@ -142,20 +162,23 @@ const addReply = (post_id, comment_id, reply) => {
 
 /**
  * Changes the reply to a comment to be whatever is passed through.
- * @param {number} postId - The numerical postId of the post
- * @param {number} commentId - The numerical id of the comment
- * @param {number} replyId - The numerical id of the reply
- * @param {object} replyInfo - The object of the reply being changed
+ * @param {number} post_id - The numerical id of the post
+ * @param {number} comment_id - The numerical id of the comment
+ * @param {number} reply_id - The numerical id of the reply
+ * @param {object} info - The object of the reply being changed
  */
-const editReply = (postId, commentId, replyId, replyInfo) => {
+const editReply = (post_id, comment_id, reply_id, info) => {
     // Grabs the posts in local storage
     let posts = getAllPosts();
+    console.log("hi",posts[post_id].comments[comment_id].replies);
 
     // Change the reply in the array
-    posts[postId].comments[commentId].replies[replyId] = {
-        ...posts[postId].comments[commentId].replies[replyId],
-        ...replyInfo,
+    posts[post_id].comments[comment_id].replies[reply_id] = {
+        ...posts[post_id].comments[comment_id].replies[reply_id],
+        ...info,
     };
+
+    console.log(posts[post_id].comments[comment_id].replies)
 
     // Puts the new posts information into local storage
     replacePosts(posts);
@@ -163,38 +186,19 @@ const editReply = (postId, commentId, replyId, replyInfo) => {
 
 /**
  * Removes a reply using the post, comment, and reply ids.
- * @param {number} postId - The numerical postId of the post
- * @param {number} commentId - The numerical id of the comment
- * @param {number} replyId - The numerical id of the reply
+ * @param {number} post_id - The numerical id of the post
+ * @param {number} comment_id - The numerical id of the comment
+ * @param {number} reply_id - The numerical id of the reply
  */
-const removeReply = (postId, commentId, replyId) => {
+const removeReply = (post_id, comment_id, reply_id) => {
     // Grabs the posts in local storage
     let posts = getAllPosts();
 
     // Removes the comment to the array
-    posts[postId].comments[commentId].replies.splice(replyId, 1);
+    posts[post_id].comments[comment_id].replies.splice(reply_id, 1);
 
     // Puts the new posts information into local storage
     replacePosts(posts);
-};
-
-/**
- * Uploads file to imgur.
- * @param {File} file Uploads a file to imgur to keep it stored non-locally
- * @returns {string} Link to the uploaded file
- */
-const upload = async (file) => {
-    const imgurClient = new imgur({ clientId: '7af276a6d6f6507' });
-    try {
-        const res = await imgurClient.upload({
-            image: file,
-            type: 'stream',
-        });
-        if (res.status !== 200) return null;
-        return res?.data?.link ?? null;
-    } catch (e) {
-        console.log(e);
-    }
 };
 
 export {
@@ -203,11 +207,10 @@ export {
     editPost,
     removePost,
     removePostsByUser,
-    addComment,
+    createComment,
     editComment,
     removeComment,
-    addReply,
+    createReply,
     editReply,
     removeReply,
-    upload,
 };

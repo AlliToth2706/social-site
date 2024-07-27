@@ -1,11 +1,12 @@
 import { removePostsByUser } from './posts';
 import { deleteAccount } from './accounts';
+import { removeAllReactionsFromUser } from './reactions';
 
 const LS_ACCOUNTS = 'users';
 
 /**
- * Gets the details for all of the accounts in localStorage.
- * @return {object} An object
+ * Gets the details for all of the accounts in localstorage.
+ * @return {object} The details of all the accounts in localstorage.
  */
 const getAllDetails = () => {
     return JSON.parse(localStorage.getItem(LS_ACCOUNTS));
@@ -13,14 +14,10 @@ const getAllDetails = () => {
 
 /**
  * Gets the details for a specified user.
- * @param {string} email - The user to get the information of
- * @return {object} The details of the user
+ * @param {string} email - The user's email to get the information of
+ * @return {object} The details of the account
  */
-const getDetails = (email) => {
-    let details = getAllDetails();
-
-    return details.find((e) => e.email === email);
-};
+const getDetails = (email) => getAllDetails().find((e) => e.email === email);
 
 /**
  * Creates some basic information for a new user.
@@ -54,9 +51,6 @@ const setDetails = (details) => {
  */
 const changeDetails = (details) => {
     let d = getAllDetails();
-
-    // Removes unnecessary field from the object
-    // delete details.email;
     d[details.email] = details;
     setDetails(d);
 };
@@ -72,6 +66,9 @@ const deleteAccountDetails = (email) => {
     // Remove all of the information for the user in accounts
     deleteAccount(email);
     removePostsByUser(email);
+
+    // Remove all reactions from users
+    removeAllReactionsFromUser();
 
     setDetails(accountDetails);
 };

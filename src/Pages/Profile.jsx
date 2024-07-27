@@ -24,7 +24,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { imageRegex, longToastTime, shortToastTime, UserContext } from '../App';
 import Alert from '../Components/Alert';
 import Modal from '../Components/Modal';
-import { getFollow, getFollows, getFollowsTo } from '../Data/following';
+import { isFollowing, getFollows, getFollowsTo } from '../Data/following';
 import { AvatarButton, FollowButton } from '../Components';
 import UserPosts from '../Components/UserPosts';
 
@@ -206,7 +206,6 @@ const EditProfile = ({ setUser }) => {
  * E.g. could show a loading screen until setInitialInformation/setUserInformation isnt empty
  */
 const Profile = ({ setUser }) => {
-    // TODO: fix follow button on following page not being set correctly
     const loggedInUser = useContext(UserContext);
     const { User } = useParams();
 
@@ -235,7 +234,7 @@ const Profile = ({ setUser }) => {
         setUsers(getUsers());
 
         // Sets the follow state
-        if (User !== loggedInUser && isFollowed == null) setIsFollowed(getFollow(loggedInUser, User));
+        if (User !== loggedInUser && isFollowed == null) setIsFollowed(isFollowing(loggedInUser, User));
 
         // On unmount, close the modal if it is open
         return onClose;
@@ -372,11 +371,10 @@ const UserPanel = ({ user, shouldShowFollow }) => {
     const [isFollowed, setIsFollowed] = useState(null);
 
     useEffect(() => {
-        // if (isFollowed == null) getFollow(User, user.email).then((e) => setIsFollowed(e));
         if (isFollowed == null) {
-            const isFollowing = getFollow(User, user.email);
-            console.log(isFollowing);
-            setIsFollowed(isFollowing);
+            const isFollowingUser = isFollowing(User, user.email);
+            // console.log(isFollowingUser);
+            setIsFollowed(isFollowingUser);
         }
     }, [isFollowed, User, user]);
 

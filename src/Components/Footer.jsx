@@ -46,6 +46,10 @@ const Footer = ({ login, signup }) => {
             <Flex direction="column" align="start">
                 <Text>Social Media Website</Text>
                 <Text>Created by Alli Toth 2022-2024</Text>
+                <Button variant="unstyled" onClick={()=>{
+                    localStorage.clear();
+                    window.location.reload();
+                }}>Having issues? Click here</Button>
             </Flex>
             <Spacer />
         </Flex>

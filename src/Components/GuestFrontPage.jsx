@@ -30,7 +30,7 @@ const GuestFrontPage = ({ login, signup }) => {
                     </Text>
                 </Flex>
 
-                <Image src={`/social/${colorMode === 'light' ? 'light' : 'dark'}.png`} w="45%" />
+                <Image src={`${process.env.PUBLIC_URL}/${colorMode}.png`} w="45%" />
             </Flex>
         </>
     );

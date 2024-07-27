@@ -17,14 +17,14 @@ const UserPosts = ({ user }) => {
             .map((e) => {
                 e.comments = e.comments
                     ?.map((f) => {
-                        f.comments = f.comments?.filter((g) => g.email === user);
+                        console.log(f);
+                        f.replies = f.replies?.filter((g) => g.email === user);
                         return f;
                     })
-                    .filter((f) => f.email === user || f.comments.length > 0);
-
+                    .filter((f) => f.email === user && f.replies.length > 0);
                 return e;
             })
-            .filter((e) => e.email === user || e.comments.length > 0);
+            .filter((e) => e.email === user && e.comments.length > 0);
         setPosts(p);
     }, [user]);
 

@@ -14,25 +14,6 @@ const reactionTypes = {
 };
 
 /**
- * Gets the reaction a user has put on a post
- * @param {object} post The post to check the reactions of
- * @param {string} email The user to check the reaction of
- * @returns
- */
-const getUserPostReactions = (post, email) => {
-    const reactions = post.reactions;
-    let userReaction = null;
-    for (const reaction in reactionTypes) {
-        if (reactions[reaction].includes(email)) {
-            userReaction = reaction;
-            break;
-        }
-    }
-
-    return userReaction;
-};
-
-/**
  * Removes all reactions a user has given to all posts
  * @param {string} email Email of the user to remove information of
  */
@@ -63,4 +44,4 @@ const removeAllReactionsFromUser = (email) => {
     });
 };
 
-export { reactionTypes, getUserPostReactions, removeAllReactionsFromUser };
+export { reactionTypes, removeAllReactionsFromUser };

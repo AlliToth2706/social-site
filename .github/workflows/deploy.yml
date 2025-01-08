@@ -4,12 +4,11 @@ on:
     push:
         branches: [main]
 
-permissions:
-    contents: read
-    pages: write
-
 jobs:
     deploy:
+        permissions:
+            contents: write
+            pages: write
         name: Deploy
         runs-on: ubuntu-latest
         steps:

@@ -28,7 +28,7 @@ import { isFollowing, getFollows, getFollowsTo } from '../Data/following';
 import { AvatarButton, FollowButton } from '../Components';
 import UserPosts from '../Components/UserPosts';
 
-const EditProfile = ({ setUser }) => {
+const EditProfile = ({ setUser, updateUsers }) => {
     const User = useContext(UserContext);
     let navigate = useNavigate();
     const toast = useToast();
@@ -82,6 +82,8 @@ const EditProfile = ({ setUser }) => {
         if (e.target.name === 'avatar') {
             setValidLink(e.target.value !== '' ? imageRegex.test(e.target.value) : null);
         }
+
+        console.log(editingInformation);
     };
 
     const handleSubmit = (e) => {
@@ -108,16 +110,10 @@ const EditProfile = ({ setUser }) => {
         }
 
         // Set the changed information
-        let worked = editUserInfo({ ...initialInformation, ...editingInformation });
-        if (!worked) {
-            toast({
-                title: 'An error occurred.',
-                status: 'error',
-                duration: shortToastTime,
-                isClosable: true,
-            });
-            return;
-        }
+        editUserInfo({ ...initialInformation, ...editingInformation });
+
+        updateUsers();
+
         // Give the user notification that their changes have gone through
         toast({
             title: 'Account details changed.',
@@ -174,7 +170,6 @@ const EditProfile = ({ setUser }) => {
                     </FormControl>
                     <FormControl mb={2} isInvalid={isValidLink == null ? false : !isValidLink}>
                         <FormLabel>Avatar</FormLabel>
-                        {/* TODO: make this work */}
                         <Input
                             type="url"
                             name="avatar"
@@ -221,6 +216,10 @@ const Profile = ({ setUser }) => {
 
     const { isOpen, onOpen, onClose } = useDisclosure();
 
+    const updateUsers = () => {
+        setUsers(getUsers());
+    };
+
     useEffect(() => {
         addProfileVisit(User);
     }, [User]);
@@ -228,11 +227,12 @@ const Profile = ({ setUser }) => {
     // Gets information from the database
     useEffect(() => {
         // Gets the users that the current user is following, and the users that are following the user
+        // TODO: Update this when closing the modal for follows
         setFollowings(getFollows(User));
         setFollowers(getFollowsTo(User));
 
         // Get all of the users
-        setUsers(getUsers());
+        updateUsers();
 
         // Sets the follow state
         if (User !== loggedInUser && isFollowed == null) setIsFollowed(isFollowing(loggedInUser, User));
@@ -339,7 +339,7 @@ const Profile = ({ setUser }) => {
                             <br />
 
                             {User === loggedInUser ? (
-                                <EditProfile setUser={setUser} />
+                                <EditProfile setUser={setUser} updateUsers={updateUsers} />
                             ) : isFollowed == null ? (
                                 <Spinner size="xl" />
                             ) : (
@@ -376,7 +376,6 @@ const UserPanel = ({ user, shouldShowFollow }) => {
     useEffect(() => {
         if (isFollowed == null) {
             const isFollowingUser = isFollowing(User, user.email);
-            // console.log(isFollowingUser);
             setIsFollowed(isFollowingUser);
         }
     }, [isFollowed, User, user]);

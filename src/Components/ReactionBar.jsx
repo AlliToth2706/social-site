@@ -4,7 +4,6 @@ import { reactionTypes } from '../Data/reactions';
 
 // Displays all reactions that can appear on a post, and allows interaction with them
 const ReactionBar = ({ user, post, editInfo }) => {
-    // TODO: fix removing like/dislike removing an extra dislike/like from count
     // Formats post reaction info to an object with the amounts for each reaction
 
     const [reactions, setReactions] = useState(post.reactions);

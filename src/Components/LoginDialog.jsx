@@ -46,8 +46,7 @@ const LoginDialog = ({ login, isOpen, onClose }) => {
             return;
         }
 
-        let verified,
-            reason = verifyUser(user.email, user.password);
+        let { verified, reason } = verifyUser(user.email, user.password);
 
         // login unsuccessful
         if (verified !== true) {

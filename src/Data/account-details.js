@@ -51,7 +51,8 @@ const setDetails = (details) => {
  */
 const changeDetails = (details) => {
     let d = getAllDetails();
-    d[details.email] = details;
+    let index = d.findIndex((e) => e.email === details.email);
+    d[index] = details;
     setDetails(d);
 };
 

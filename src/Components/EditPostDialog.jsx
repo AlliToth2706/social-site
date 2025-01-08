@@ -78,7 +78,7 @@ const EditPostDialog = ({ original_post, id, setEditing }) => {
             <Alert
                 heading="Delete Post?"
                 onClick={() => {
-                    removePost(original_post.post_id);
+                    removePost(id);
                     closeAndSync();
                     onClose();
                 }}

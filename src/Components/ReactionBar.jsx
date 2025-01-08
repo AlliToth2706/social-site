@@ -1,72 +1,43 @@
 import { Box, Button, ButtonGroup, Center, Stack } from '@chakra-ui/react';
 import React, { useState } from 'react';
-import { getUserPostReactions, reactionTypes } from '../Data/reactions';
+import { reactionTypes } from '../Data/reactions';
 
 // Displays all reactions that can appear on a post, and allows interaction with them
 const ReactionBar = ({ user, post, editInfo }) => {
     // Formats post reaction info to an object with the amounts for each reaction
-    const getReactionAmountObject = () => {
-        const reactionInfo = {};
-        Object.keys(reactionTypes).forEach((reaction) => (reactionInfo[reaction] = post.reactions[reaction].length));
-        return reactionInfo;
-    };
 
-    // Get initial reaction information
-    const [userReaction, setUserReaction] = useState(getUserPostReactions(post, user));
-    const [reactionAmount, setReactionAmount] = useState(getReactionAmountObject());
+    const [reactions, setReactions] = useState(post.reactions);
 
-    const refreshRatings = () => {
-        setReactionAmount(getReactionAmountObject());
-    };
-
-    const removeUserReactFromPost = () => {
-        // Get all the reactions for the post
-        const reacts = post.reactions;
-
-        // Remove the user from the reaction
-        Object.keys(reactionTypes).forEach((reactionType) => {
-            reacts[reactionType].splice(
-                reacts[reactionType].findIndex((e) => e === user),
-                1
-            );
-        });
-
-        // Edit accordingly
-        editInfo(reacts);
-        setUserReaction(null);
-    };
-
-    const addUserReactToPost = (reactionType) => {
-        // Get all the reactions for the post
-        const reacts = post.reactions;
-        // Remove the user from the reaction
-        reacts[reactionType].push(user);
-
-        // Edit accordingly
-        editInfo(reacts);
-        setUserReaction(reactionType);
+    const userInReactions = (reactionList) => {
+        return reactionList.includes(user);
     };
 
     const reactionCallback = (reactionType) => {
-        if (userReaction === reactionType) {
-            removeUserReactFromPost();
-        } else {
-            if (userReaction != null) {
-                removeUserReactFromPost();
-            }
-            addUserReactToPost(reactionType);
-        }
-        refreshRatings();
+        // Check if the user has reacted to the post with the given reaction already
+        const hasReacted = userInReactions(reactions[reactionType]);
+
+        // Remove the user from both reaction types
+        const reacts = {};
+        Object.keys(reactions).forEach((reaction) => {
+            reacts[reaction] = reactions[reaction].filter((e) => e !== user);
+        });
+
+        // Add the reaction if the user had not reacted
+        if (!hasReacted) reacts[reactionType].push(user);
+
+        setReactions(reacts);
+
+        editInfo(reacts);
     };
 
     return (
         <ButtonGroup spacing="0">
-            {Object.keys(reactionTypes).map((reaction, i) => {
+            {Object.keys(reactions).map((reaction, i) => {
                 return (
                     <Stack key={i}>
                         <Box>
                             <Button
-                                variant={userReaction === reaction ? 'reaction' : 'navbar'}
+                                variant={userInReactions(reactions[reaction]) ? 'reaction' : 'navbar'}
                                 className="material-icons"
                                 size="sm"
                                 onClick={() => reactionCallback(reaction)}
@@ -75,7 +46,7 @@ const ReactionBar = ({ user, post, editInfo }) => {
                                 {reactionTypes[reaction].materialIconName}
                             </Button>
                         </Box>
-                        <Center>{reactionAmount[reaction]}</Center>
+                        <Center>{reactions[reaction].length}</Center>
                     </Stack>
                 );
             })}

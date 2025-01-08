@@ -98,8 +98,8 @@ const createComment = (post_id, comment) => {
     let posts = getAllPosts();
 
     // Set variables if they have not been set already
-    comment.reactions = comment.reactions??defaultReactions;
-    comment.replies = comment.replies?? [];
+    comment.reactions = comment.reactions ?? defaultReactions;
+    comment.replies = comment.replies ?? [];
 
     // Adds the comment to the array
     posts[post_id].comments.push(comment);
@@ -170,7 +170,6 @@ const createReply = (post_id, comment_id, info) => {
 const editReply = (post_id, comment_id, reply_id, info) => {
     // Grabs the posts in local storage
     let posts = getAllPosts();
-    console.log("hi",posts[post_id].comments[comment_id].replies);
 
     // Change the reply in the array
     posts[post_id].comments[comment_id].replies[reply_id] = {
@@ -178,7 +177,7 @@ const editReply = (post_id, comment_id, reply_id, info) => {
         ...info,
     };
 
-    console.log(posts[post_id].comments[comment_id].replies)
+    console.log(posts[post_id].comments[comment_id].replies);
 
     // Puts the new posts information into local storage
     replacePosts(posts);

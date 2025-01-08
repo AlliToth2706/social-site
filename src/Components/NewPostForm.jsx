@@ -55,40 +55,46 @@ const NewPostForm = () => {
     const User = useContext(UserContext);
     const { setPosts } = useContext(PostContext);
 
-    const postText = 'Post';
-    const blankPost = {
-        email: User,
-        text: '',
-        image_url: '',
-    };
+    const FORM_TYPE = 'Post';
 
-    const [newPost, setNewPost] = useState(blankPost);
     const toast = useToast();
-    const [isValidLink, setValidLink] = useState(null);
+
+    const [postText, setPostText] = useState('');
     const [isInvalid, setIsInvalid] = useState(true);
+
+    const [url, setURL] = useState('');
+    const [isValidLink, setValidLink] = useState(null);
+
+    const clearPost = () => {
+        setPostText('');
+        setIsInvalid(true);
+        setURL('');
+        setValidLink(null);
+    };
 
     // The text is now sanitised in the Quill component
     const handleQuillChange = (inputText, isFailing) => {
-        setNewPost({ ...newPost, text: inputText });
+        setPostText(inputText);
         setIsInvalid(isFailing);
     };
 
     // Changes the values passed through whenever there is a change
     // to be used in the passed handleSubmit function
     const handleChange = (e) => {
-        const tmp = { ...newPost };
-        tmp[e.target.name] = e.target.value;
+        if (e.target.name === 'text') setPostText(e.target.value);
         if (e.target.name === 'image_url') {
-            setValidLink(e.target.value !== '' && imageRegex.test(e.target.value));
+            if (e.target.value === '') {
+                setValidLink(null);
+                e.target.value = '';
+            } else setValidLink(imageRegex.test(e.target.value));
+            setURL(e.target.value);
         }
-
-        setNewPost(tmp);
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
 
-        if (!checkValidPost(newPost.text, isInvalid, toast)) return;
+        if (!checkValidPost(postText, isInvalid, toast)) return;
 
         if (isValidLink === false) {
             toast({
@@ -101,16 +107,15 @@ const NewPostForm = () => {
         }
 
         // Makes a new post with the information given
-        createPost({ ...newPost });
+        createPost({ text: postText, image_url: url, email: User });
         setPosts(getAllPosts());
 
         // Sets the new post back to blank
-        setNewPost(blankPost);
-        setIsInvalid(true);
+        clearPost();
 
         // Lets the user know their action was successful
         toast({
-            title: `New ${postText} created.`,
+            title: `New ${FORM_TYPE} created.`,
             status: 'success',
             duration: longToastTime,
             isClosable: true,
@@ -122,16 +127,16 @@ const NewPostForm = () => {
             <AccordionItem>
                 <AccordionButton>
                     <Heading textAlign="center" size="md">
-                        New {postText}
+                        New {FORM_TYPE}
                     </Heading>
                     <Spacer />
                     <AccordionIcon />
                 </AccordionButton>
                 <AccordionPanel pb={4}>
                     <Flex as="form" align="center" justify="center" direction="column" w="full" onSubmit={handleSubmit}>
-                        <FormControl isRequired={true} mb={2} isInvalid={newPost.text.length > maxPostLength}>
+                        <FormControl isRequired={true} mb={2} isInvalid={postText.length > maxPostLength}>
                             <FormLabel>Body</FormLabel>
-                            <Quill value={newPost.text} textCallback={handleQuillChange} container="new-post" />
+                            <Quill value={postText} textCallback={handleQuillChange} container="new-post" />
                             <FormErrorMessage>The post must be {maxPostLength} characters at max.</FormErrorMessage>
                         </FormControl>
                         <Text as="i" mt={2} mb={4} w="100%" alignSelf="baseline" fontSize="sm">
@@ -144,7 +149,7 @@ const NewPostForm = () => {
                                 type="url"
                                 name="image_url"
                                 placeholder="Add an image"
-                                value={newPost.image_url}
+                                value={url}
                                 onChange={handleChange}
                             />
                             <FormErrorMessage>
@@ -153,9 +158,9 @@ const NewPostForm = () => {
                         </FormControl>
 
                         <Flex direction="row" w="full" mt={4}>
-                            <Button type="submit">{postText}</Button>
+                            <Button type="submit">{FORM_TYPE}</Button>
                             <Spacer />
-                            <Button onClick={() => setNewPost(blankPost)}>Clear</Button>
+                            <Button onClick={() => clearPost()}>Clear</Button>
                         </Flex>
                     </Flex>
                 </AccordionPanel>

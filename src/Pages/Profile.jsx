@@ -174,6 +174,7 @@ const EditProfile = ({ setUser }) => {
                     </FormControl>
                     <FormControl mb={2} isInvalid={isValidLink == null ? false : !isValidLink}>
                         <FormLabel>Avatar</FormLabel>
+                        {/* TODO: make this work */}
                         <Input
                             type="url"
                             name="avatar"

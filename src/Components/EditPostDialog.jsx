@@ -75,6 +75,7 @@ const EditPostDialog = ({ original_post, id, setEditing }) => {
 
     return (
         <>
+            {/* TODO: make delete command delete the correct post */}
             <Alert
                 heading="Delete Post?"
                 onClick={() => {

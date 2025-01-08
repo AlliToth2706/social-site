@@ -370,6 +370,8 @@ const UserPanel = ({ user, shouldShowFollow }) => {
     const User = useContext(UserContext);
     const [isFollowed, setIsFollowed] = useState(null);
 
+    let navigate = useNavigate();
+
     useEffect(() => {
         if (isFollowed == null) {
             const isFollowingUser = isFollowing(User, user.email);
@@ -380,10 +382,12 @@ const UserPanel = ({ user, shouldShowFollow }) => {
 
     return (
         <Flex direction="row" align="center" mb={2}>
-            <AvatarButton user={user} size="md" margin="0 10px" />
-            <Text as="b" fontSize="lg">
-                {user.first_name} {user.last_name}
-            </Text>
+            <Flex align="center" onClick={() => navigate(`/profile/${user.email}`)}>
+                <AvatarButton user={user} size="md" margin="0 10px" />
+                <Text as="b" fontSize="lg" style={{ cursor: 'pointer' }}>
+                    {user.first_name} {user.last_name}
+                </Text>
+            </Flex>
             {shouldShowFollow && (
                 <>
                     <Spacer />

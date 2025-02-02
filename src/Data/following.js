@@ -110,13 +110,10 @@ const addFollow = (from_email, to_email) => {
  * @param {string} to_email The email of the user that will no longer be followed
  */
 const removeFollow = (from_email, to_email) => {
-    // https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array-in-javascript
-    const follows = getFollows(from_email);
-    let index = follows.indexOf(to_email);
-    if (index > -1) {
-        follows.splice(index, 1);
-    }
-    setFollowsOfUser(from_email, follows);
+    setFollowsOfUser(
+        from_email,
+        getFollows(from_email).filter((e) => e !== to_email)
+    );
 };
 
 export { getFollows, getFollowsTo, getNotFollowing, addFollow, removeFollow, isFollowing, initialiseFollows };

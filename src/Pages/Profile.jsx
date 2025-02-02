@@ -220,32 +220,43 @@ const Profile = ({ setUser }) => {
         setUsers(getUsers());
     };
 
+    // Gets the users that the current user is following, and the users that are following the user
+    const updateFollows = () => {
+        setFollowings(getFollows(User));
+        setFollowers(getFollowsTo(User));
+    };
+
     useEffect(() => {
         addProfileVisit(User);
     }, [User]);
 
     // Gets information from the database
     useEffect(() => {
-        // Gets the users that the current user is following, and the users that are following the user
-        // TODO: Update this when closing the modal for follows
-        setFollowings(getFollows(User));
-        setFollowers(getFollowsTo(User));
-
         // Get all of the users
         updateUsers();
+
+        // Update the lists of who follows and who the user follows
+        updateFollows();
 
         // Sets the follow state
         if (User !== loggedInUser && isFollowed == null) setIsFollowed(isFollowing(loggedInUser, User));
 
         // On unmount, close the modal if it is open
         return onClose;
+
+        // eslint-disable-next-line
     }, [isFollowed, User, loggedInUser, onClose]);
 
     return (
         <>
             <Modal
                 isOpen={isOpen}
-                onClose={onClose}
+                onClose={() => {
+                    onClose();
+
+                    // Update the following and followers count
+                    updateFollows();
+                }}
                 heading={
                     open === 0 ? `Following (${followings?.length ?? 0})` : `Followers (${followers?.length ?? 0})`
                 }

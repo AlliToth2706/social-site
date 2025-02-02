@@ -13,12 +13,13 @@ import AliceCarousel from 'react-alice-carousel';
 import 'react-alice-carousel/lib/alice-carousel.css';
 
 const responsive = {
-    0: { items: 2, itemsFit: undefined },
-    768: { items: 3, itemsFit: undefined },
-    1024: { items: 4, itemsFit: undefined },
+    0: { items: 100, itemsFit: 'fill' },
+    // 992: { items: 2.5, itemsFit: 'fill' },
+    // 1280: { items: 3.5, itemsFit: 'fill' },
+    // 1536: { items: 4.5, itemsFit: 'fill' },
 };
 
-//This is the front page for a logged in user
+// This is the front page for a logged in user
 const UserFrontPage = () => {
     const User = useContext(UserContext);
     const [user, setUser] = useState(null);
@@ -44,45 +45,54 @@ const UserFrontPage = () => {
                     <Heading size="lg">Find new people on the site:</Heading>
                 )}
             </Box>
-            <Flex direction="row" w="100%">
+            <Flex direction="row" w="full" overflow="hidden">
                 <Loading bool={notFollowed}>
-                    <Box w="100%">
-                        <AliceCarousel
-                            items={notFollowed?.map((u, i) => (
-                                <React.Fragment key={i}>
-                                    <UserElement user={u} />
-                                </React.Fragment>
-                            ))}
-                            responsive={responsive}
-                            mouseTracking
-                            disableDotsControls
-                            // autoWidth
-                        />
-                    </Box>
+                    {notFollowed?.map((u, i) => (
+                        <Flex key={i} align="center" justify="center" w="min-content" mx={4}>
+                            <UserElement user={u} />
+                        </Flex>
+                    ))}
                 </Loading>
             </Flex>
         </Flex>
     );
 };
 
-//Small user profile, to prompt users to follow
+// Small user profile, to prompt users to follow
 const UserElement = ({ user }) => {
     const User = useContext(UserContext);
     const [isFollowed, setIsFollowed] = useState(null);
 
     useEffect(() => {
-        // if (isFollowed == null) isFollowing(User, user.email).then((e) => setIsFollowed(e));
         if (isFollowed == null) setIsFollowed(isFollowing(User, user.email));
     }, [isFollowed, User, user.email]);
 
     return (
-        <Flex borderWidth="1px" borderRadius="lg" maxW={80} direction="row" padding="1rem" margin="0 1rem">
-            <AvatarButton user={user} size="lg" margin="0 10px" />
-            <Flex direction="column" padding="0 2rem">
-                <Text fontSize="lg" align="center">
+        <Flex borderWidth="1px" borderRadius="lg" w={64} direction="row" padding="1rem">
+            <AvatarButton user={user} size="lg" />
+            <Flex direction="column" overflow="hidden" w="full">
+                {/* TODO: fix this for overflow, and to make extras show */}
+                <Text
+                    fontSize="lg"
+                    align="center"
+                    textOverflow="ellipsis"
+                    whiteSpace="nowrap"
+                    overflow="hidden"
+                    pb={2}
+                    w="full"
+                    px={2}
+                >
                     {user.first_name} {user.last_name}
                 </Text>
-                <FollowButton from_user={User} to_user={user.email} state={isFollowed} setState={setIsFollowed} />
+                <Flex w="full" justify="center">
+                    <FollowButton
+                        from_user={User}
+                        to_user={user.email}
+                        state={isFollowed}
+                        setState={setIsFollowed}
+                        w="full"
+                    />
+                </Flex>
             </Flex>
         </Flex>
     );

@@ -1,4 +1,12 @@
-import { createComment, createReply, editComment, editReply, getAllPosts, removeComment, removeReply } from '../Data/posts';
+import {
+    createComment,
+    createReply,
+    editComment,
+    editReply,
+    getAllPosts,
+    removeComment,
+    removeReply,
+} from '../Data/posts';
 import { Box, Button, ButtonGroup, Flex, FormControl, Spacer, Text, useDisclosure, useToast } from '@chakra-ui/react';
 import React, { useContext, useState } from 'react';
 import { textFilter, UserContext } from '../App';
@@ -14,7 +22,6 @@ import { checkValidPost } from './NewPostForm';
  * The form for users to add comments to posts.
  */
 const CommentForm = ({ parent_id, comment_id = null, type = 'comment', setIsReplying = () => {} }) => {
-    // const CommentForm = ({ parent_id, setIsReplying, syncCurrentPosts }) => {
     const User = useContext(UserContext);
     const { setPosts } = useContext(PostContext);
 

@@ -139,7 +139,7 @@ const NewPostForm = () => {
                             <Quill value={postText} textCallback={handleQuillChange} container="new-post" />
                             <FormErrorMessage>The post must be {maxPostLength} characters at max.</FormErrorMessage>
                         </FormControl>
-                        <Text as="i" mt={2} mb={4} w="100%" alignSelf="baseline" fontSize="sm">
+                        <Text as="i" mt={2} mb={4} w="full" alignSelf="baseline" fontSize="sm">
                             Hint: Select text to format it
                         </Text>
 

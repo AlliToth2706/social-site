@@ -20,7 +20,7 @@ const customTheme = {
             nav: {
                 bg: mode('cyan.600', 'cyan.700')(props),
                 h: '5rem',
-                w: '100%',
+                w: 'full',
                 p: '0 1rem',
             },
         }),
@@ -61,6 +61,7 @@ const customTheme = {
             },
         },
     },
+    sizes: { '8xl': '75vw' },
 };
 
 export default customTheme;

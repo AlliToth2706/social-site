@@ -10,7 +10,7 @@ const Footer = ({ login, signup }) => {
     const User = useContext(UserContext);
     const { colorMode } = useColorMode();
     return (
-        <Flex as="footer" bg={colorMode === 'light' ? 'gray.400' : 'gray.500'} p={2} w="100%">
+        <Flex as="footer" bg={colorMode === 'light' ? 'gray.400' : 'gray.500'} p={2} w="full">
             <Spacer />
             <Flex direction="column" align="start">
                 <Button as={Link} variant="unstyled" to="/">

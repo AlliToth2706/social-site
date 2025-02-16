@@ -2,7 +2,6 @@ import { Box, Button, ButtonGroup, Flex, Spacer, Text, Tooltip, useColorMode } f
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { getUser, removeUser, verifyUser } from '../Data/accounts';
 import React, { useContext } from 'react';
-// import { ReactComponent as Logo } from '../logo.svg';
 import { UserContext } from '../App';
 
 const NavbarLink = ({ children, onClick, to, variant, label }) => {

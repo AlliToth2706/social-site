@@ -18,8 +18,8 @@ const GuestFrontPage = ({ login, signup }) => {
             </Flex>
 
             <Spacer />
-            <Flex justify="center" direction="row" w="100%" flex={1}>
-                <Flex w="50%" direction="column" h="100%">
+            <Flex justify="center" direction="row" w="full" flex={1}>
+                <Flex w="50%" direction="column" h="full">
                     <Heading size="md" m="2rem 0">
                         What is this website?
                     </Heading>

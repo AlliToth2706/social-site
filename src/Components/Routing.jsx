@@ -24,7 +24,7 @@ const RoutingInternals = () => {
                     justify="center"
                     as="main"
                     position="relative"
-                    w="75vw"
+                    w="8xl"
                     sx={{ wordWrap: 'break-word' }}
                     h="full"
                     grow="1"

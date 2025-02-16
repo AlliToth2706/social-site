@@ -61,6 +61,7 @@ const customTheme = {
             },
         },
     },
+    sizes: { '8xl': '75vw' },
 };
 
 export default customTheme;

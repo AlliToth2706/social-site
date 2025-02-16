@@ -1,5 +1,4 @@
-import { Box, Flex, Heading, Text } from '@chakra-ui/react';
-
+import { Box, Flex, Heading, Button, Text } from '@chakra-ui/react';
 import { UserContext } from '../App';
 import React, { useContext } from 'react';
 import { getUserInfo } from '../Data/accounts';
@@ -9,15 +8,6 @@ import { isFollowing, getNotFollowing } from '../Data/following';
 import FollowButton from './FollowButton';
 import AvatarButton from './AvatarButton';
 import Loading from './Loading';
-import AliceCarousel from 'react-alice-carousel';
-import 'react-alice-carousel/lib/alice-carousel.css';
-
-const responsive = {
-    0: { items: 100, itemsFit: 'fill' },
-    // 992: { items: 2.5, itemsFit: 'fill' },
-    // 1280: { items: 3.5, itemsFit: 'fill' },
-    // 1536: { items: 4.5, itemsFit: 'fill' },
-};
 
 // This is the front page for a logged in user
 const UserFrontPage = () => {
@@ -29,7 +19,7 @@ const UserFrontPage = () => {
         setNotFollowed(getNotFollowing(User));
     }, [User]);
     return (
-        <Flex align="center" direction="column" mt="6" w="full">
+        <Flex align="center" direction="column" mt="6" w="full" overflow="hidden">
             {user != null && (
                 <Heading size="md">
                     Welcome, {user.first_name} {user.last_name}!
@@ -45,16 +35,91 @@ const UserFrontPage = () => {
                     <Heading size="lg">Find new people on the site:</Heading>
                 )}
             </Box>
-            <Flex direction="row" w="full" overflow="hidden">
-                <Loading bool={notFollowed}>
-                    {notFollowed?.map((u, i) => (
-                        <Flex key={i} align="center" justify="center" w="min-content" mx={4}>
-                            <UserElement user={u} />
-                        </Flex>
-                    ))}
-                </Loading>
-            </Flex>
+            <Loading bool={notFollowed}>
+                <Carousel elem={notFollowed} />
+            </Loading>
         </Flex>
+    );
+};
+
+const Carousel = ({ elem }) => {
+    // max width: 64rem
+    // element width: 16 + 2 rem
+    const [current, setCurrent] = useState(0);
+    const cssBase = 'chakra-sizes-';
+    const getCSS = (property) => {
+        const style = getComputedStyle(document.documentElement);
+        const fontSize = parseInt(style.fontSize.slice(0, -2));
+        const propertyValue = style.getPropertyValue(`--${property}`);
+        if (propertyValue.endsWith('rem')) return parseInt(propertyValue.slice(0, -3)) * fontSize;
+        if (propertyValue.endsWith('vw'))
+            return (parseInt(propertyValue.slice(0, -2)) * document.documentElement.clientWidth) / 100;
+        return propertyValue;
+    };
+
+    const maxSize = getCSS(cssBase + '8xl');
+    const marginSize = getCSS(cssBase + '4');
+    const elementSize = marginSize * 2 + getCSS(cssBase + '64');
+
+    const displayedElements = Math.floor(maxSize / elementSize);
+    const currentMax = Math.max(elem.length - displayedElements, 0);
+
+    const handleClick = (arrow) => {
+        if (arrow === 'l') {
+            setCurrent(Math.max(current - 1, 0));
+        } else if (arrow === 'r') {
+            setCurrent(Math.min(current + 1, currentMax));
+        }
+    };
+
+    return (
+        <>
+            <Flex
+                direction="row"
+                w="full"
+                sx={{
+                    transform: `translate(-${Math.min(elementSize * current, maxSize)}px)`,
+                }}
+            >
+                {elem?.map((u, i) => (
+                    <Flex key={i} align="center" justify="center" w="min-content" mx={4}>
+                        <UserElement user={u} />
+                    </Flex>
+                ))}
+            </Flex>
+            <Flex
+                direction="row"
+                w="full"
+                justify="center"
+                align="center"
+                mt={6}
+                display={currentMax === 0 ? 'none' : 'flex'}
+            >
+                <Button
+                    className="material-icons"
+                    variant="unstyled"
+                    h="initial"
+                    minW="initial"
+                    fontSize="4xl"
+                    mr={2}
+                    isDisabled={current === 0}
+                    onClick={() => handleClick('l')}
+                >
+                    chevron_left
+                </Button>
+                <Button
+                    className="material-icons"
+                    variant="unstyled"
+                    h="initial"
+                    minW="initial"
+                    fontSize="4xl"
+                    isDisabled={current === currentMax}
+                    onClick={() => handleClick('r')}
+                >
+                    chevron_right
+                </Button>
+            </Flex>
+        </>
     );
 };
 
@@ -71,7 +136,6 @@ const UserElement = ({ user }) => {
         <Flex borderWidth="1px" borderRadius="lg" w={64} direction="row" padding="1rem">
             <AvatarButton user={user} size="lg" />
             <Flex direction="column" overflow="hidden" w="full">
-                {/* TODO: fix this for overflow, and to make extras show */}
                 <Text
                     fontSize="lg"
                     align="center"
